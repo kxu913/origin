@@ -1,0 +1,17 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8080
+  },
+  "web-proxy": {
+    "config": [
+      {
+        "path": "/*",
+        "target": {
+          "server": "localhost",
+          "port": 8888
+        }
+      }
+    ]
+  }
+}
