@@ -223,3 +223,6 @@ public class Main extends AbstractVerticle {
 - `docker/Dokerfile`,通过源码编译成一个native-image打包的docker镜像，需要在项目中包括maven环境，可以将`.mvn`添加到项目中。
 - `docker/Dokerfile.fat-jar`，通过可执行的jar包编译成一个native-image打包的docker镜像。
 - `docker/Dokerfile.legacy-jar`，通过可执行的jar包编译成一个基于openjdk的docker镜像。
+
+### 示例
+[示例代码](./examples)包括启动一个简单的web工程和启动一套数据处理的app工程。
