@@ -1,55 +1,40 @@
 ## Origin Framework
-*Read this in other languages: [English](readme.md), [中文](readme_zh.md)*
-### Introduce
+*其他语言版本: [English](readme.md), [中文](readme_zh.md)*
+### 介绍
 
-Origin is a framework base on [Vert.x](https://vertx.io/), it used to simplify the process to create a web/standard application. 
+它是一个基于[Vert.x](https://vertx.io/)
+构建出来的一个框架，旨在简化使用Vert.x的使用。选择Vert.x，因为它的reactive模式，可以让应用更好的利用容器资源，它支持以集群模式或者单机模式运行应用，支持应用目前包括：
 
-Select Vert.x due to its principle is reactive and container first.
-
-It supports the following applications:
 - Web application
 - Standard application
 
-Configure firstly, due to reactive methodology, the first thing is get configuration then initialize class, then the instance of class store in BeanFactory.
+配置大于代码，需要在代码中使用正确的配置来获取对应的类实例，使用spi模式注入基础类`com.origin.starter.web.spi.OriginRouter`
+或者`com.origin.starter.app.spi.OriginTask`
 
-Use SPI to inject basic class.
-- Web basic class, `com.origin.starter.web.spi.OriginRouter`
-- Standard basic class, `com.origin.starter.app.spi.OriginTask`
+### 性能测试
+*测试接口，从数据库查询100条数据，包括一个长text字段，[测试代码](https://github.com/kxu913/comparison)*
+- 数据库连接池设置为50。
+- docker设置最大内存为512m。
 
-Provide Single Patten and Cluster Patten.
-- Single Patten, it's a separate instance.
-- Cluster Patten, it depends on Zookeeper, and all instance on same znode share data and eventbus and so on.
-
-### Performance Result
-*Test case is get 100 data from database, and result row contains a long text, [Test Code](https://github.com/kxu913/comparison)*
-
-*Test Setting*
-- Database connection pool size is 50.
-- Restrict memory is 512m for docker.
-
-*Conclusion*
-
-- Low concurrency, RT of Springboot will less than origin's RT.
-- High concurrency, RT of origin will less than Springboot's RT.
-- Docker, RT of origin will be less than Springboot's RT. In case of 128M memory, springboot application occurs OOM error sometimes. 
+**在并发数不高的情况下，springBoot的响应时间略快于origin，但是在并发数高的情况下，origin有明显的优势，在docker模式下，限定内存越低，origin优势更明显，限定为128m的情况下，springBoot会出现错误率。**
 
 <table>
 <tr>
-<td rowspan="2">Test Cases</td>
-<td colspan="2">Springboot Local</td>
-<td colspan="2">Origin Local</td>
-<td colspan="2">Springboot Docker</td>
-<td colspan="2">Origin Docker</td>
+<td rowspan="2">并发</td>
+<td colspan="2">Springboot 本地运行模式</td>
+<td colspan="2">Origin 本地运行模式</td>
+<td colspan="2">Springboot Docker运行模式</td>
+<td colspan="2">Origin Docker运行模式</td>
 </tr>
 <tr>
-<td>Avg(ms)</td>
-<td>Max(ms)</td>
-<td>Avg(ms)</td>
-<td>Max(ms)</td>
-<td>Avg(ms)</td>
-<td>Max(ms)</td>
-<td>Avg(ms)</td>
-<td>Max(ms)</td>
+<td>平均响应时间(ms)</td>
+<td>最大响应时间(ms)</td>
+<td>平均响应时间(ms)</td>
+<td>最大响应时间(ms)</td>
+<td>平均响应时间(ms)</td>
+<td>最大响应时间(ms)</td>
+<td>平均响应时间(ms)</td>
+<td>最大响应时间(ms)</td>
 </tr>
 <tr>
 <td>50Threads*10Loops</td>
@@ -86,22 +71,22 @@ Provide Single Patten and Cluster Patten.
 </tr>
 </table>
 
-### Modules
+### 模块
 - origin-starter-pom
-pom project, declare dependencies and versions.
+pom工程，声明项目的依赖以及包括的模块。
 - origin-starter-web
-Use to create a web application.
+用于快速创建一个web工程。
 - origin-starter-app
-Use to create a standard application.
+用于快速创建一个标准应用。
 
-### Usage
+### 用法
 
-due to Origin doesn't push to center maven repository, so you need to clone this project and compile it by yourself.
+目前没有push到maven仓库，需要在本地安装。
 
-- clone the project.
-- compile the project.
-- add the dependency to your project.
-    - create a web project.
+- clone工程到本地。
+- 按需编译工程。
+- 在个人的项目中按需引入依赖。
+    - 启动一个web工程
       ```xml
       <dependency>
           <groupId>com.originframework</groupId>
@@ -111,7 +96,7 @@ due to Origin doesn't push to center maven repository, so you need to clone this
           <type>jar</type>
       </dependency>
       ```
-    - create a standard project.
+    - 启动一个app工程
       ```xml
       <dependency>
           <groupId>com.originframework</groupId>
@@ -122,11 +107,11 @@ due to Origin doesn't push to center maven repository, so you need to clone this
       </dependency>
       ```
 
-### Configuration
+### 配置
 
-- create a spi file in `META-INF`, then add your service into the file.
-    - Web application，add a spi file named `com.originframework.web.spi.OriginRouter` in `META-INF`, then create a class implement `com.originframework.web.spi.OriginRouter` and add apis in `route()` method.
-      Example:
+- 基础类使用spi模式，需要在`META-INF`下面创建对应的实现类，将实现类添加到service文件。
+  - Web工程，添加`com.originframework.web.spi.OriginRouter`，代码中实现类的`route()`方法。
+    示例：
 
     ```java
     
@@ -155,9 +140,9 @@ due to Origin doesn't push to center maven repository, so you need to clone this
         }
     }
     ```
-    - Standard application，add a spi file named `com.originframework.web.spi.OriginTask` in `META-INF`, then create a class implement `com.originframework.web.spi.OriginTask` and add business logic in `run()` method.
-      Example:
 
+  - Standard工程，添加`com.originframework.web.spi.OriginTask`，代码中实现类的`run()`方法。
+  示例：
     ```java
     public class DataGenerator implements OriginTask {
     
@@ -171,8 +156,8 @@ due to Origin doesn't push to center maven repository, so you need to clone this
     
     ```
 
-- configuration first, create a configuration file named `conf/config.json`, and add child configuration in the file to initialize modules you required, such as `server`,`db`,`es`,`redis` and so on.
-  Completed configuration.
+- 配置优先代码，需要在添加配置文件，`conf/config.json`, 根据配置中声明的模块获取相应实例。
+  完整配置
 
 ```json
 {
@@ -208,10 +193,10 @@ due to Origin doesn't push to center maven repository, so you need to clone this
 }
 ```
 
-### Starter
+### 启动
 
-- Start a single application.
-  - start a web application.
+- 启动单机实例。
+  - 启动web工程。
     ```java
     public class Main extends AbstractVerticle {
         public static void main(String[] args) {
@@ -219,16 +204,19 @@ due to Origin doesn't push to center maven repository, so you need to clone this
         }
     }
     ```
-  - Start a standard application.
-  ```java
+
+  - 启动app项目。
+    ```java
     public class Main extends AbstractVerticle {
         public static void main(String[] args) {
             OriginAppApplication.runAsSingle(Main.class);
         }
     }
     ```
-- Start an application that register into zookeeper node, it depends on zookeeper, all instance share data, eventbus if they are under a same zookeeper znode, you can add a `zookeeper.json` into your project to specify znode.
-  - Start a web application
+
+- 启动集群实例。集群依赖于zookeeper，需要有一个zookeeper集群，模式在同一个znode下面，可以互相通信，你也可以添加一个`zookeeper.json`
+到工程，指定不同的znode。
+  - 启动web工程。
     ```java
     public class Main extends AbstractVerticle {
         public static void main(String[] args) {
@@ -236,7 +224,8 @@ due to Origin doesn't push to center maven repository, so you need to clone this
         }
     }
     ```
-  - Start a standard application.
+
+  - 启动app项目。
     ```java
     public class Main extends AbstractVerticle {
         public static void main(String[] args) {
@@ -245,9 +234,9 @@ due to Origin doesn't push to center maven repository, so you need to clone this
     }
     ```
 
-### Package
+### 打包
 
-- package an executable jar, add `maven-shade-plugin` into pom.xml, specify main class, to avoid conflict of java version, should exclude `SF`,`RSA`,`DSA` files.
+- 打包成可运行的jar包，添加`maven-shade-plugin`插件，指定main函数，避免依赖包的java版本冲突，需要exclude掉版本声明文件。
 
 ```xml
 
@@ -289,13 +278,12 @@ due to Origin doesn't push to center maven repository, so you need to clone this
 </plugin>
 ```
 
-- create an executable file, add `native-image-maven-plugin` into pom.xml, it depends on `native-image` of `GraalVM`, so need add `native-image.properties` in `META-INF\native-image`
-  folder, the file specify how to package and how to lint static files, and you can use argument ` -agentlib:native-image-agent` to generate jni,proxy files, below is steps.
-  - generate static files.
-    ```shell
-    `java -agentlib:native-image-agent=config-output-dir=./src/main/resources/META-INF/native-image -cp .\target\config-1.0.0-SNAPSHOT-fat.jar com.kevin.sample.vertx.config.ConfigVerticle`
-    ```
-  - create `native-image.properties` file.
+- 利用native-image生成可执行文件，需要添加`native-image-maven-plugin`插件，同时添加一个`META-INF\native-image`
+  目录下添加一个`native-image.properties`
+  文件，声明jni，反射，proxy等文件的处理，以及打包设置，这些文件可以通过` -agentlib:native-image-agent`来生成。
+    - 假设你已经生成了一个可执行的jar包，可以通过以下命令来生成这些配置文件。
+      `java -agentlib:native-image-agent=config-output-dir=./src/main/resources/META-INF/native-image -cp .\target\config-1.0.0-SNAPSHOT-fat.jar com.kevin.sample.vertx.config.ConfigVerticle`
+    - 编写`native-image.properties`文件，内容如下，由于项目中用logback替换掉了netty原生的log框架，所以需要添加额外的一些slf4j的配置。
   ```json
   Args =\
   --report-unsupported-elements-at-runtime \
@@ -313,9 +301,9 @@ due to Origin doesn't push to center maven repository, so you need to clone this
   --initialize-at-run-time=\
   io.netty.handler.codec.compression.ZstdOptions
   ```
-  - add `native-image-maven-plugin` plugin, run`mvn clean package`to generate an executable file.
-    ```xml
-    <plugin>
+    - 添加`native-image-maven-plugin`插件，运行`mvn clean package`就可以生成一个不依赖于jvm的可执行文件。
+  ```xml
+  <plugin>
     <groupId>org.graalvm.nativeimage</groupId>
     <artifactId>native-image-maven-plugin</artifactId>
     <version>${graal.version}</version>
@@ -327,15 +315,15 @@ due to Origin doesn't push to center maven repository, so you need to clone this
         <phase>package</phase>
       </execution>
     </executions>
-    </plugin>
-    ```
+  </plugin>
+  ```
 
-### Containerize
+### 容器化
 
-- `docker/Dokerfile`, build a docker image by source codes, depends on maven wrapper.
-- `docker/Dokerfile.fat-jar`, build a docker image by an executable jar file.
-- `docker/Dokerfile.legacy-jar`, build a docker image by an executable jar file, base image is openjdk.
+- `docker/Dokerfile`,通过源码编译成一个native-image打包的docker镜像，需要在项目中包括maven环境，可以将`.mvn`添加到项目中。
+- `docker/Dokerfile.fat-jar`，通过可执行的jar包编译成一个native-image打包的docker镜像。
+- `docker/Dokerfile.legacy-jar`，通过可执行的jar包编译成一个基于openjdk的docker镜像。
 
-### Demo
+### 示例
 
-[Examples](./examples)include an example to start a web application and an example to create data flow cluster base on eventbus. 
+[示例代码](./examples)包括启动一个简单的web工程和启动一套数据处理的app工程。
