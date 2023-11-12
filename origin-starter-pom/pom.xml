@@ -32,6 +32,7 @@
         <micrometer.version>1.10.7</micrometer.version>
         <pg-client.version>4.4.4</pg-client.version>
         <pg.version>42.6.0</pg.version>
+        <es.version>8.11.0</es.version>
         <slf-api.version>2.0.9</slf-api.version>
         <logback.version>1.4.6</logback.version>
         <lombok.version>1.18.22</lombok.version>
@@ -101,6 +102,12 @@
                 <groupId>com.originframework</groupId>
                 <artifactId>origin-starter-tools</artifactId>
                 <version>${origin.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>co.elastic.clients</groupId>
+                <artifactId>elasticsearch-java</artifactId>
+                <version>${es.version}</version>
                 <scope>compile</scope>
             </dependency>
         </dependencies>
