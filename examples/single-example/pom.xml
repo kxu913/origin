@@ -100,21 +100,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-            <!-- if you want to use `mvn clean compile exec:java` to run application, uncomment it.-->
-            <!--            <plugin>-->
-            <!--                <groupId>org.codehaus.mojo</groupId>-->
-            <!--                <artifactId>exec-maven-plugin</artifactId>-->
-            <!--                <version>${exec-maven-plugin.version}</version>-->
-            <!--                <configuration>-->
-            <!--                    <mainClass>io.vertx.core.Launcher</mainClass>-->
-            <!--                    <arguments>-->
-            <!--                        <argument>run</argument>-->
-            <!--                        <argument>${main.verticle}</argument>-->
-            <!--                    </arguments>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
-
-
         </plugins>
     </build>
 

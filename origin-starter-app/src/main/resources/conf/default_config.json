@@ -8,5 +8,20 @@
     "pool": {
       "maxSize": 20
     }
+  },
+  "redis": {
+    "endpoint": "redis://localhost:6379",
+    "role ": "MASTER",
+    "maxWaitingHandlers": 2048,
+    "netClientOptions": {
+      "TcpKeepAlive": true,
+      "TcpNoDelay": true
+    }
+  },
+  "es": {
+    "host": "localhost",
+    "port": 9200,
+    "schema": "http",
+    "data-type": "application/json"
   }
 }

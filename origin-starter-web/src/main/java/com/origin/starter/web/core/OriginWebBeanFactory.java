@@ -13,6 +13,10 @@ import io.vertx.redis.client.RedisOptions;
 import io.vertx.sqlclient.PoolOptions;
 import io.vertx.sqlclient.SqlClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.message.BasicHeader;
+import org.elasticsearch.client.RestClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +32,7 @@ public class OriginWebBeanFactory {
         beanConfigs = new HashMap<>();
         beanConfigs.put("db", null);
         beanConfigs.put("redis", null);
+        beanConfigs.put("es", null);
     }
 
     public Future<Map<String, JsonObject>> loadBeanConfig() {
@@ -78,5 +83,12 @@ public class OriginWebBeanFactory {
         return Redis.createClient(vc.getVertx(), new RedisOptions(redisConfig));
     }
 
+    public RestClient getESRestClient() {
+        JsonObject esConfig = beanConfigs.get("es");
+        return RestClient.builder(new HttpHost(esConfig.getString("host"), esConfig.getInteger("port"), esConfig.getString("schema")))
+                .setDefaultHeaders(new Header[]{
+                        new BasicHeader("Content-type", esConfig.getString("data-type"))
+                }).build();
+    }
 
 }

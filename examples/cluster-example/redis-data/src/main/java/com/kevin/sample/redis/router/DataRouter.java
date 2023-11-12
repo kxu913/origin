@@ -1,5 +1,6 @@
 package com.kevin.sample.redis.router;
 
+import com.origin.starter.web.OriginWebApplication;
 import com.origin.starter.web.domain.OriginConfig;
 import com.origin.starter.web.domain.OriginVertxContext;
 import com.origin.starter.web.spi.OriginRouter;
@@ -34,7 +35,7 @@ public class DataRouter implements OriginRouter {
 
     private void setDataV2(OriginVertxContext originVertxContext, String key, long o, Function<Void, Void> handleData) {
 
-        Redis.createClient(originVertxContext.getVertx(), new RedisOptions().setMaxWaitingHandlers(10000))
+        OriginWebApplication.getBeanFactory().getRedisClient()
                 .connect()
                 .onComplete(ar -> {
                     if (ar.succeeded()) {
@@ -53,7 +54,7 @@ public class DataRouter implements OriginRouter {
 
 
     private void getData(OriginVertxContext originVertxContext, String key, Function<Response, Void> handleData) {
-        Redis.createClient(originVertxContext.getVertx())
+        OriginWebApplication.getBeanFactory().getRedisClient()
                 .connect().onComplete(ar -> {
                     if (ar.succeeded()) {
                         RedisConnection connection = ar.result();

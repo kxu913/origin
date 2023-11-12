@@ -1,5 +1,14 @@
 {
   "server": {
     "port": 8081
+  },
+  "redis": {
+    "endpoint": "redis://localhost:6379",
+    "role ": "MASTER",
+    "maxWaitingHandlers": 2048,
+    "netClientOptions": {
+      "TcpKeepAlive": true,
+      "TcpNoDelay": true
+    }
   }
 }

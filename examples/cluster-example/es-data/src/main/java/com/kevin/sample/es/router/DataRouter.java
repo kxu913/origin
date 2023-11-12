@@ -5,6 +5,7 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.kevin.sample.es.domain.Demo;
+import com.origin.starter.web.OriginWebApplication;
 import com.origin.starter.web.domain.OriginConfig;
 import com.origin.starter.web.domain.OriginVertxContext;
 import com.origin.starter.web.spi.OriginRouter;
@@ -40,10 +41,7 @@ public class DataRouter implements OriginRouter {
     private void setDataV2(OriginVertxContext originVertxContext, String index, Long o, Function<Void, Void> handleData) throws IOException {
 
         try (
-                RestClient restClient = RestClient.builder(new HttpHost("localhost", 9200, "http"))
-                        .setDefaultHeaders(new Header[]{
-                                new BasicHeader("Content-type", "application/json")
-                        }).build();
+                RestClient restClient = OriginWebApplication.getBeanFactory().getESRestClient();
                 ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
         ) {
             ElasticsearchAsyncClient esClient =

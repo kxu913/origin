@@ -1,3 +1,8 @@
 {
-
+  "es": {
+    "host": "localhost",
+    "port": 9200,
+    "schema": "http",
+    "data-type": "application/json"
+  }
 }
