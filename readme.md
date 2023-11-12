@@ -142,5 +142,84 @@ public class Main extends AbstractVerticle {
     }
 }
 ```
-  
-
+### 打包
+- 打包成可运行的jar包，添加`maven-shade-plugin`插件，指定main函数，避免依赖包的java版本冲突，需要exclude掉版本声明文件。
+```xml
+<plugin>
+  <artifactId>maven-shade-plugin</artifactId>
+  <version>${maven-shade-plugin.version}</version>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>shade</goal>
+      </goals>
+      <configuration>
+        <transformers>
+          <transformer
+                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <manifestEntries>
+              <Main-Class>${main.verticle}</Main-Class>
+              <Main-Verticle>${main.verticle}</Main-Verticle>
+            </manifestEntries>
+          </transformer>
+          <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+        </transformers>
+        <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar
+        </outputFile>
+        <filters>
+          <filter>
+            <artifact>*:*</artifact>
+            <excludes>
+              <exclude>META-INF/*.SF</exclude>
+              <exclude>META-INF/*.DSA</exclude>
+              <exclude>META-INF/*.RSA</exclude>
+            </excludes>
+          </filter>
+        </filters>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+- 利用native-image生成可执行文件，需要添加`native-image-maven-plugin`插件，同时添加一个`META-INF\native-image`目录下添加一个`native-image.properties`文件，声明jni，反射，proxy等文件的处理，以及打包设置，这些文件可以通过` -agentlib:native-image-agent`来生成。 
+  - 假设你已经生成了一个可执行的jar包，可以通过以下命令来生成这些配置文件。
+  `java -agentlib:native-image-agent=config-output-dir=./src/main/resources/META-INF/native-image -cp .\target\config-1.0.0-SNAPSHOT-fat.jar com.kevin.sample.vertx.config.ConfigVerticle`
+  - 编写`native-image.properties`文件，内容如下，由于项目中用logback替换掉了netty原生的log框架，所以需要添加额外的一些slf4j的配置。
+  ```json
+  Args =\
+  --report-unsupported-elements-at-runtime \
+  --initialize-at-run-time=io.netty.handler.ssl \
+  --initialize-at-build-time=org.slf4j.LoggerFactory,ch.qos.logback \
+  --trace-class-initialization=org.slf4j.MDC \
+  -H:ReflectionConfigurationResources=${.}/reflect-config.json \
+  -H:JNIConfigurationResources=${.}/jni-config.json \
+  -H:ResourceConfigurationResources=${.}/resource-config.json \
+  -H:Class=com.kevin.sample.vertx.config.ConfigVerticle \
+  -H:+PrintClassInitialization \
+  -H:+ReportExceptionStackTraces \
+  --no-fallback \
+  -H:Name=config \
+  --initialize-at-run-time=\
+  io.netty.handler.codec.compression.ZstdOptions
+  ```
+  - 添加`native-image-maven-plugin`插件，运行`mvn clean package`就可以生成一个不依赖于jvm的可执行文件。
+  ```xml
+  <plugin>
+    <groupId>org.graalvm.nativeimage</groupId>
+    <artifactId>native-image-maven-plugin</artifactId>
+    <version>${graal.version}</version>
+    <executions>
+      <execution>
+        <goals>
+          <goal>native-image</goal>
+        </goals>
+        <phase>package</phase>
+      </execution>
+    </executions>
+  </plugin>
+  ```
+### 容器化
+- `docker/Dokerfile`,通过源码编译成一个native-image打包的docker镜像，需要在项目中包括maven环境，可以将`.mvn`添加到项目中。
+- `docker/Dokerfile.fat-jar`，通过可执行的jar包编译成一个native-image打包的docker镜像。
+- `docker/Dokerfile.legacy-jar`，通过可执行的jar包编译成一个基于openjdk的docker镜像。

@@ -1,0 +1,8 @@
+FROM openjdk:17
+
+ARG workspace
+
+COPY $workspace/target/*-fat.jar /app/app.jar
+WORKDIR /app
+
+ENTRYPOINT ["java","-jar", "./app.jar" ]

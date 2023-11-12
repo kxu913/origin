@@ -1,0 +1,15 @@
+## Stage 1 : build with maven builder image with native capabilities
+FROM container-registry.oracle.com/graalvm/native-image:17 AS build
+
+ARG workspace
+
+COPY $workspace/target/*-fat.jar /app/app.jar
+WORKDIR /app
+RUN native-image -jar app.jar
+
+## Stage 2 : create the final image, need a glibc or musl alpine
+FROM frolvlad/alpine-glibc
+COPY --from=build /app/demo /app/application
+EXPOSE 8888
+WORKDIR /app/
+ENTRYPOINT [ "/app/application" ]
