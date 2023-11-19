@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.originframework</groupId>
       <artifactId>origin-starter-app</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${origin.version}</version>
       <scope>compile</scope>
       <type>jar</type>
     </dependency>

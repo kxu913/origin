@@ -27,6 +27,7 @@ public class OriginWebApplication {
     private static final ThreadLocal<OriginWebBeanFactory> ORIGIN_BEAN_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
 
     public static void runAsSingle(Class<? extends Verticle> clazz) {
+
         VertxOptions options = new VertxOptions()
                 .setMaxWorkerExecuteTime(30)
                 .setWorkerPoolSize(40)
