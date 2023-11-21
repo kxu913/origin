@@ -6,6 +6,6 @@ import io.vertx.core.AbstractVerticle;
 
 public class Main extends AbstractVerticle {
     public static void main(String[] args) {
-        OriginAppApplication.runAsCluster(Main.class);
+        OriginAppApplication.runAsSingle(Main.class);
     }
 }
