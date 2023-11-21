@@ -69,6 +69,8 @@ public class OriginAppApplication {
             Future.all(configFuture, appBeanFactoryFuture, deployFuture).onComplete(ar -> {
                 if (ar.succeeded()) {
                     List<Object> results = ar.result().list();
+                    JsonObject appConfig = (JsonObject) results.get(0);
+                    originConfig.setAppConfig(appConfig);
                     VERTX_CONTENT_THREAD_LOCAL.set(originVertxContent);
                     CONFIG_FACTORY_THREAD_LOCAL.set(originConfig);
                     log.info("*** context, config injected.");

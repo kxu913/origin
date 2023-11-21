@@ -24,6 +24,7 @@ public class HttpStarter {
                     .onComplete(aServerConfig -> {
                         if (aServerConfig.succeeded()) {
                             JsonObject serverConfig = aServerConfig.result().getJsonObject("server");
+                            log.info("{}",serverConfig);
                             int port = serverConfig.getInteger("port");
                             vertxContext.getServer().listen(port)
                                     .onComplete(sar -> {

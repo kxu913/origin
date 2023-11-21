@@ -4,6 +4,7 @@ package com.origin.starter.app.domain;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
@@ -38,5 +39,6 @@ public class OriginAppConfig {
 
         return this;
     }
+
 
 }
