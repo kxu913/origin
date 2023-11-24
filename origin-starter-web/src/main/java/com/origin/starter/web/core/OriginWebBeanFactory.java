@@ -15,10 +15,12 @@ import io.vertx.sqlclient.SqlClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -88,7 +90,12 @@ public class OriginWebBeanFactory {
         return RestClient.builder(new HttpHost(esConfig.getString("host"), esConfig.getInteger("port"), esConfig.getString("schema")))
                 .setDefaultHeaders(new Header[]{
                         new BasicHeader("Content-type", esConfig.getString("data-type"))
-                }).build();
+                }).setHttpClientConfigCallback(httpAsyncClientBuilder ->
+                        httpAsyncClientBuilder
+                                .addInterceptorLast((HttpResponseInterceptor) (response, context) ->
+                                        response.setHeader("X-Elastic-Product", esConfig.getString("product-id"))
+                                )
+                                .setMaxConnPerRoute(100)).build();
     }
 
 }
