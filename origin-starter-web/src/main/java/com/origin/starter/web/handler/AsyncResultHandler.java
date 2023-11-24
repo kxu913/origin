@@ -6,6 +6,7 @@ import io.vertx.core.Future;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Slf4j
@@ -18,9 +19,9 @@ public class AsyncResultHandler {
      * @param func, the function that handle the success object.
      * @param <T>   success object that used to handle.
      */
-    public static <T> void handleAsyncResult(AsyncResult<T> ar, RoutingContext ctx, Function<T, Void> func) {
+    public static <T> void handleAsyncResult(AsyncResult<T> ar, RoutingContext ctx, Consumer<T> func) {
         if (ar.succeeded()) {
-            func.apply(ar.result());
+            func.accept(ar.result());
         } else {
             log.error(ar.cause().getMessage(), ar.cause());
             ctx.fail(500, ar.cause());
@@ -55,7 +56,7 @@ public class AsyncResultHandler {
      * @param func,   the function that handle the success object.
      * @param <T>     success object that used to handle
      */
-    public static <T> void handleFuture(Future<T> future, RoutingContext ctx, Function<T, Void> func) {
+    public static <T> void handleFuture(Future<T> future, RoutingContext ctx, Consumer<T> func) {
         future.onComplete(ar -> {
             handleAsyncResult(ar, ctx, func);
         }).onFailure(err -> {
