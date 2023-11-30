@@ -32,7 +32,6 @@ public class BlogRouter implements OriginRouter {
                                 rowSet.forEach(row -> results.add(row.toJson()));
                                 ctx.json(results);
                                 sqlClient.close();
-                                return null;
                             });
 
                 });
@@ -68,7 +67,8 @@ public class BlogRouter implements OriginRouter {
                                         "t.txt",
                                         buffer,
                                         ar -> {
-                                            AsyncResultHandler.handleAsyncResult(ar, ctx, v -> null);
+                                            AsyncResultHandler.handleAsyncResult(ar, ctx, v -> {
+                                            });
                                         }
                                 );
                                 return results;

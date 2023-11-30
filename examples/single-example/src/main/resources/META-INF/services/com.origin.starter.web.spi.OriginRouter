@@ -1,1 +1,2 @@
 com.kevin.sample.vertx.blog.router.BlogRouter
+com.kevin.sample.vertx.blog.router.LockRouter
