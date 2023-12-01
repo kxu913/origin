@@ -4,6 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.shareddata.SharedData;
 import io.vertx.ext.healthchecks.HealthCheckHandler;
 import io.vertx.ext.web.Router;
 import io.vertx.micrometer.PrometheusScrapingHandler;
@@ -19,12 +20,14 @@ public class OriginVertxContext {
     private Router router;
     private FileSystem fs;
     private Vertx vertx;
+    private SharedData sharedData;
 
 
     public OriginVertxContext fromVertx(Vertx vertx) {
         this.server = vertx.createHttpServer();
         this.router = Router.router(vertx);
         this.fs = vertx.fileSystem();
+        this.sharedData = vertx.sharedData();
         this.vertx = vertx;
         initRouter(vertx);
         return this;

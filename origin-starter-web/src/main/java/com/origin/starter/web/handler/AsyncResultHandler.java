@@ -30,6 +30,22 @@ public class AsyncResultHandler {
     }
 
     /**
+     * simplify operations about how to handle an async result, log error.
+     *
+     * @param ar,   an async result that contains object from some operations.
+     * @param func, the function that handle the success object.
+     * @param <T>   success object that used to handle.
+     */
+    public static <T> void handleAsyncResult(AsyncResult<T> ar, Consumer<T> func) {
+        if (ar.succeeded()) {
+            func.accept(ar.result());
+        } else {
+            log.error(ar.cause().getMessage(), ar.cause());
+        }
+
+    }
+
+    /**
      * simplify operations about how to handle an async result, wrapped error handling,return an object.
      *
      * @param ar   an async result that contains object from some operations.
@@ -62,6 +78,22 @@ public class AsyncResultHandler {
         }).onFailure(err -> {
             log.error(err.getMessage(), err);
             ctx.fail(500, err);
+        });
+
+    }
+
+    /**
+     * simplify operations about how to handle a future, log error.
+     *
+     * @param future, a future that contains object from some operations.
+     * @param func,   the function that handle the success object.
+     * @param <T>     success object that used to handle
+     */
+    public static <T> void handleFuture(Future<T> future, Consumer<T> func) {
+        future.onComplete(ar -> {
+            handleAsyncResult(ar, func);
+        }).onFailure(err -> {
+            log.error(err.getMessage(), err);
         });
 
     }

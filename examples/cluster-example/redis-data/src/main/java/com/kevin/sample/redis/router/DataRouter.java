@@ -3,7 +3,9 @@ package com.kevin.sample.redis.router;
 import com.origin.starter.web.OriginWebApplication;
 import com.origin.starter.web.domain.OriginConfig;
 import com.origin.starter.web.domain.OriginVertxContext;
+import com.origin.starter.web.handler.AsyncResultHandler;
 import com.origin.starter.web.spi.OriginRouter;
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.*;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +17,17 @@ public class DataRouter implements OriginRouter {
 
     @Override
     public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
-        originConfig.getEventBus().consumer("data")
-                .handler(ar -> {
-                    setDataV2(originVertxContext, "data", Long.parseLong(ar.body().toString()), v -> null);
-                });
+        Future<RedisConnection> redisConnectionFuture = OriginWebApplication.getBeanFactory().getRedisClient().connect();
+        AsyncResultHandler.handleFuture(redisConnectionFuture, redisConnection -> {
+            originConfig.getEventBus().consumer("data")
+                    .handler(ar -> {
+                        setDataV2(originVertxContext, redisConnection, "data", Long.parseLong(ar.body().toString()), () -> {
+                        });
+                    }).endHandler(end -> {
+                        redisConnection.close();
+                    });
+        });
+
 
         originVertxContext.getRouter().get("/data/:key")
                 .handler(ctx -> {
@@ -33,21 +42,12 @@ public class DataRouter implements OriginRouter {
     }
 
 
-    private void setDataV2(OriginVertxContext originVertxContext, String key, long o, Function<Void, Void> handleData) {
-
-        OriginWebApplication.getBeanFactory().getRedisClient()
-                .connect()
-                .onComplete(ar -> {
-                    if (ar.succeeded()) {
-                        RedisConnection connection = ar.result();
-                        Request request = Request.cmd(Command.SADD).arg(key).arg(o);
-                        connection.send(request);
-                        handleData.apply(null);
-                        connection.close();
-                    }
+    private void setDataV2(OriginVertxContext originVertxContext, RedisConnection connection, String key, long o, Runnable handleData) {
 
 
-                });
+        Request request = Request.cmd(Command.SADD).arg(key).arg(o);
+        connection.send(request);
+        handleData.run();
 
 
     }
