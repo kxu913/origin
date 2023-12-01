@@ -6,6 +6,8 @@ import io.vertx.core.shareddata.Lock;
 import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.function.Consumer;
+
 @Slf4j
 public class LockHandler {
     private static final String DEFAULT_LOCK_KEY = "lock";
@@ -58,16 +60,12 @@ public class LockHandler {
      * @param ctx     the routing context
      * @param fn      the code block to run
      */
-    public static void runWithLock(OriginVertxContext context, RoutingContext ctx, Runnable fn) {
+    public static void runWithLock(OriginVertxContext context, RoutingContext ctx, Consumer<Lock> fn) {
         // Get the lock object from the shared data in the origin Vertx context with the default lock key
         Future<Lock> future = context.getSharedData().getLock(DEFAULT_LOCK_KEY);
         // Handle the asynchronous result of acquiring the lock
-        AsyncResultHandler.handleFuture(future, ctx, lock -> {
-            // Run the specified code block
-            fn.run();
-            // Release the lock object
-            lock.release();
-        });
+        // Run the specified code block
+        AsyncResultHandler.handleFuture(future, ctx, fn);
     }
 
 }
