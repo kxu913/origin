@@ -1,0 +1,9 @@
+com\origin\framework\core\bean\OriginConfig.class
+com\origin\framework\core\factory\OriginBeanFactory.class
+com\origin\framework\core\handler\LockHandler.class
+com\origin\framework\core\bean\OriginWebVertxContext.class
+com\origin\framework\core\handler\AsyncResultHandler.class
+com\origin\framework\core\exception\InvalidResponseException.class
+com\origin\framework\core\exception\InvalidBeanException.class
+com\origin\framework\core\exception\InvalidArgumentException.class
+com\origin\framework\core\bean\OriginVertxContext.class
