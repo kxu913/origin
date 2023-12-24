@@ -1,11 +1,12 @@
 package com.kevin.sample.vertx.blog.router;
 
 
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.spi.OriginRouter;
 import com.origin.starter.web.OriginWebApplication;
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
-import com.origin.starter.web.handler.AsyncResultHandler;
-import com.origin.starter.web.spi.OriginRouter;
+
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.SqlClient;
@@ -18,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class BlogRouter implements OriginRouter {
     @Override
-    public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
+    public void router(OriginWebVertxContext originVertxContext, OriginConfig originConfig) {
 
         // a simple example that handle ctx in handler method.
         originVertxContext.getRouter().get("/blog")

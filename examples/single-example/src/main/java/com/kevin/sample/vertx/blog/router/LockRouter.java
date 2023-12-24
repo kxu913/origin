@@ -1,27 +1,22 @@
 package com.kevin.sample.vertx.blog.router;
 
-
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.core.handler.LockHandler;
+import com.origin.framework.spi.OriginRouter;
 import com.origin.starter.web.OriginWebApplication;
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
-import com.origin.starter.web.handler.AsyncResultHandler;
-import com.origin.starter.web.handler.LockHandler;
-import com.origin.starter.web.spi.OriginRouter;
-import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Row;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.Tuple;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Slf4j
 public class LockRouter implements OriginRouter {
     @Override
-    public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
+    public void router(OriginWebVertxContext originVertxContext, OriginConfig originConfig) {
 
         // when you use jmeter (200 thread) test the case, due to the api use lock, you'll get the correct result as expected.
         originVertxContext.getRouter().get("/lock")

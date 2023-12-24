@@ -5,14 +5,12 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.kevin.sample.es.domain.Demo;
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.spi.OriginRouter;
 import com.origin.starter.web.OriginWebApplication;
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
-import com.origin.starter.web.spi.OriginRouter;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.Header;
-import org.apache.http.HttpHost;
-import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ import java.util.function.Function;
 public class DataRouter implements OriginRouter {
 
     @Override
-    public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
+    public void router(OriginWebVertxContext originVertxContext, OriginConfig originConfig) {
         originConfig.getEventBus().consumer("data")
                 .handler(ar -> {
                     try {
@@ -38,7 +36,7 @@ public class DataRouter implements OriginRouter {
     }
 
 
-    private void setDataV2(OriginVertxContext originVertxContext, String index, Long o, Function<Void, Void> handleData) throws IOException {
+    private void setDataV2(OriginWebVertxContext originVertxContext, String index, Long o, Function<Void, Void> handleData) throws IOException {
 
         try (
                 RestClient restClient = OriginWebApplication.getBeanFactory().getESRestClient();
@@ -58,7 +56,7 @@ public class DataRouter implements OriginRouter {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
 

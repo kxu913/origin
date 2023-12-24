@@ -1,9 +1,10 @@
 package com.origin.starter.web.core;
 
 
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
-import com.origin.starter.web.spi.OriginRouter;
+
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.spi.OriginRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.ServiceLoader;
 public class OriginRouterFactory {
 
     private final List<OriginRouter> routers = new ArrayList<>();
-    private final OriginVertxContext vc;
+    private final OriginWebVertxContext vc;
     private final OriginConfig cf;
 
 
-    public OriginRouterFactory(OriginVertxContext vc, OriginConfig cf) {
+    public OriginRouterFactory(OriginWebVertxContext vc, OriginConfig cf) {
         this.vc = vc;
         this.cf = cf;
         ServiceLoader<OriginRouter> loader = ServiceLoader.load(OriginRouter.class);

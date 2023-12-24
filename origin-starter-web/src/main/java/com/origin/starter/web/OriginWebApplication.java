@@ -1,10 +1,11 @@
 package com.origin.starter.web;
 
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.core.factory.OriginBeanFactory;
 import com.origin.starter.web.core.HttpStarter;
-import com.origin.starter.web.core.OriginWebBeanFactory;
-import com.origin.starter.web.domain.OriginConfig;
 import com.origin.starter.web.core.OriginRouterFactory;
-import com.origin.starter.web.domain.OriginVertxContext;
+
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.ClusterManager;
@@ -21,10 +22,10 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class OriginWebApplication {
-    private static final ThreadLocal<OriginVertxContext> VERTX_CONTENT_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<OriginWebVertxContext> VERTX_CONTENT_THREAD_LOCAL = new ThreadLocal<>();
     private static final ThreadLocal<OriginConfig> CONFIG_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
 
-    private static final ThreadLocal<OriginWebBeanFactory> ORIGIN_BEAN_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<OriginBeanFactory<OriginWebVertxContext>> ORIGIN_BEAN_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
 
     public static void runAsSingle(Class<? extends Verticle> clazz) {
 
@@ -76,9 +77,9 @@ public class OriginWebApplication {
 
     private static void init(Vertx vertx, Class<? extends Verticle> clazz) {
 
-        OriginVertxContext originVertxContext = new OriginVertxContext().fromVertx(vertx);
+        OriginWebVertxContext originVertxContext = new OriginWebVertxContext().fromVertx(vertx);
         OriginConfig originConfig = new OriginConfig().fromVertx(vertx);
-        OriginWebBeanFactory beanFactory = new OriginWebBeanFactory(originVertxContext);
+        OriginBeanFactory<OriginWebVertxContext> beanFactory = new OriginBeanFactory<>(originVertxContext);
         log.info("** prepared context and config.");
         Future<JsonObject> configFuture = originConfig.getRetriever().getConfig();
         log.info("** prepared load app config.");
@@ -118,11 +119,11 @@ public class OriginWebApplication {
         return CONFIG_FACTORY_THREAD_LOCAL.get();
     }
 
-    public static OriginVertxContext getContext() {
+    public static OriginWebVertxContext getContext() {
         return VERTX_CONTENT_THREAD_LOCAL.get();
     }
 
-    public static OriginWebBeanFactory getBeanFactory() {
+    public static OriginBeanFactory<OriginWebVertxContext> getBeanFactory() {
         return ORIGIN_BEAN_FACTORY_THREAD_LOCAL.get();
     }
 
