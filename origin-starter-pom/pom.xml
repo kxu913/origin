@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.originframework</groupId>
     <artifactId>origin-starter-pom</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
     <name>Origin Framework Dependencies</name>
     <url>https://kevin913.com.cn</url>
     <licenses>
@@ -37,7 +37,7 @@
         <logback.version>1.4.6</logback.version>
         <lombok.version>1.18.22</lombok.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
-        <origin.version>1.0</origin.version>
+        <origin.version>2.0</origin.version>
     </properties>
     <dependencyManagement>
         <dependencies>

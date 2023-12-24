@@ -1,10 +1,11 @@
 package com.origin.starter.app;
 
 
-import com.origin.starter.app.core.OriginAppBeanFactory;
+import com.origin.framework.core.bean.OriginVertxContext;
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.factory.OriginBeanFactory;
 import com.origin.starter.app.core.OriginTaskFactory;
-import com.origin.starter.app.domain.OriginAppConfig;
-import com.origin.starter.app.domain.OriginAppVertxContext;
+
 import io.vertx.core.*;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.spi.cluster.ClusterManager;
@@ -17,10 +18,10 @@ import java.util.Map;
 
 @Slf4j
 public class OriginAppApplication {
-    private static final ThreadLocal<OriginAppVertxContext> VERTX_CONTENT_THREAD_LOCAL = new ThreadLocal<>();
-    private static final ThreadLocal<OriginAppConfig> CONFIG_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<OriginVertxContext> VERTX_CONTENT_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<OriginConfig> CONFIG_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
 
-    private static final ThreadLocal<OriginAppBeanFactory> APP_BEAN_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<OriginBeanFactory<OriginVertxContext>> APP_BEAN_FACTORY_THREAD_LOCAL = new ThreadLocal<>();
 
 
     public static void runAsSingle(Class<? extends Verticle> clazz) {
@@ -57,10 +58,10 @@ public class OriginAppApplication {
 
     private static void init(Vertx vertx, Class<? extends Verticle> clazz) {
         try {
-            OriginAppVertxContext originVertxContent = new OriginAppVertxContext().fromVertx(vertx);
-            OriginAppConfig originConfig = new OriginAppConfig().fromVertx(vertx);
+            OriginVertxContext originVertxContent = new OriginVertxContext().fromVertx(vertx);
+            OriginConfig originConfig = new OriginConfig().fromVertx(vertx);
             log.info("** prepared context and config.");
-            OriginAppBeanFactory appBeanFactory = new OriginAppBeanFactory(originVertxContent);
+            OriginBeanFactory<OriginVertxContext> appBeanFactory = new OriginBeanFactory<>(originVertxContent);
             Future<JsonObject> configFuture = originConfig.getRetriever().getConfig();
             log.info("** prepared load app configuration.");
             Future<Map<String, JsonObject>> appBeanFactoryFuture = appBeanFactory.loadBeanConfig();
@@ -69,6 +70,8 @@ public class OriginAppApplication {
             Future.all(configFuture, appBeanFactoryFuture, deployFuture).onComplete(ar -> {
                 if (ar.succeeded()) {
                     List<Object> results = ar.result().list();
+                    JsonObject appConfig = (JsonObject) results.get(0);
+                    originConfig.setAppConfig(appConfig);
                     VERTX_CONTENT_THREAD_LOCAL.set(originVertxContent);
                     CONFIG_FACTORY_THREAD_LOCAL.set(originConfig);
                     log.info("*** context, config injected.");
@@ -86,15 +89,15 @@ public class OriginAppApplication {
     }
 
 
-    public static OriginAppConfig getConfig() {
+    public static OriginConfig getConfig() {
         return CONFIG_FACTORY_THREAD_LOCAL.get();
     }
 
-    public static OriginAppVertxContext getContext() {
+    public static OriginVertxContext getContext() {
         return VERTX_CONTENT_THREAD_LOCAL.get();
     }
 
-    public static OriginAppBeanFactory getBeanFactory() {
+    public static OriginBeanFactory<OriginVertxContext> getBeanFactory() {
         return APP_BEAN_FACTORY_THREAD_LOCAL.get();
     }
 

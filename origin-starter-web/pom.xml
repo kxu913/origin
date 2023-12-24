@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.originframework</groupId>
     <artifactId>origin-starter-web</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
     <name>origin-starter-web</name>
     <url>https://kevin913.com.cn</url>
 
@@ -22,38 +22,22 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <vertx.version>4.4.6</vertx.version>
+        <origin.version>2.0</origin.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-web</artifactId>
-            <scope>compile</scope>
-            <version>${vertx.version}</version>
+            <groupId>com.originframework</groupId>
+            <artifactId>origin-framework-spi</artifactId>
+            <version>${origin.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>compile</scope>
-            <version>2.15.0</version>
-        </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-zookeeper</artifactId>
             <version>${vertx.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-config</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-config-yaml</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-micrometer-metrics</artifactId>
@@ -78,67 +62,7 @@
             <version>${vertx.version}</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-pg-client</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-redis-client</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-sql-client-templates</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
 
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>co.elastic.clients</groupId>
-            <artifactId>elasticsearch-java</artifactId>
-            <version>8.11.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-junit5</artifactId>
-            <version>${vertx.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

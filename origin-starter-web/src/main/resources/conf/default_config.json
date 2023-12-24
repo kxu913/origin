@@ -26,6 +26,7 @@
     "host": "localhost",
     "port": 9200,
     "schema": "http",
-    "data-type": "application/json"
+    "data-type": "application/json",
+    "product-id": "es"
   }
 }

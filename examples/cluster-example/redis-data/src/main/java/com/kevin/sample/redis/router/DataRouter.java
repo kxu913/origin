@@ -1,9 +1,12 @@
 package com.kevin.sample.redis.router;
 
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
+import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.spi.OriginRouter;
 import com.origin.starter.web.OriginWebApplication;
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
-import com.origin.starter.web.spi.OriginRouter;
+
+import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.*;
 import lombok.extern.slf4j.Slf4j;
@@ -14,11 +17,18 @@ import java.util.function.Function;
 public class DataRouter implements OriginRouter {
 
     @Override
-    public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
-        originConfig.getEventBus().consumer("data")
-                .handler(ar -> {
-                    setDataV2(originVertxContext, "data", Long.parseLong(ar.body().toString()), v -> null);
-                });
+    public void router(OriginWebVertxContext originVertxContext, OriginConfig originConfig) {
+        Future<RedisConnection> redisConnectionFuture = OriginWebApplication.getBeanFactory().getRedisClient().connect();
+        AsyncResultHandler.handleFuture(redisConnectionFuture, redisConnection -> {
+            originConfig.getEventBus().consumer("data")
+                    .handler(ar -> {
+                        setDataV2(originVertxContext, redisConnection, "data", Long.parseLong(ar.body().toString()), () -> {
+                        });
+                    }).endHandler(end -> {
+                        redisConnection.close();
+                    });
+        });
+
 
         originVertxContext.getRouter().get("/data/:key")
                 .handler(ctx -> {
@@ -33,27 +43,18 @@ public class DataRouter implements OriginRouter {
     }
 
 
-    private void setDataV2(OriginVertxContext originVertxContext, String key, long o, Function<Void, Void> handleData) {
-
-        OriginWebApplication.getBeanFactory().getRedisClient()
-                .connect()
-                .onComplete(ar -> {
-                    if (ar.succeeded()) {
-                        RedisConnection connection = ar.result();
-                        Request request = Request.cmd(Command.SADD).arg(key).arg(o);
-                        connection.send(request);
-                        handleData.apply(null);
-                        connection.close();
-                    }
+    private void setDataV2(OriginWebVertxContext originVertxContext, RedisConnection connection, String key, long o, Runnable handleData) {
 
 
-                });
+        Request request = Request.cmd(Command.SADD).arg(key).arg(o);
+        connection.send(request);
+        handleData.run();
 
 
     }
 
 
-    private void getData(OriginVertxContext originVertxContext, String key, Function<Response, Void> handleData) {
+    private void getData(OriginWebVertxContext originVertxContext, String key, Function<Response, Void> handleData) {
         OriginWebApplication.getBeanFactory().getRedisClient()
                 .connect().onComplete(ar -> {
                     if (ar.succeeded()) {
