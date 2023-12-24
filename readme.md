@@ -106,7 +106,7 @@ due to Origin doesn't push to center maven repository, so you need to clone this
       <dependency>
           <groupId>com.originframework</groupId>
           <artifactId>origin-starter-web</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>2.0</version>
           <scope>compile</scope>
           <type>jar</type>
       </dependency>
@@ -116,7 +116,7 @@ due to Origin doesn't push to center maven repository, so you need to clone this
       <dependency>
           <groupId>com.originframework</groupId>
           <artifactId>origin-starter-app</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>2.0-SNAPSHOT</version>
           <scope>compile</scope>
           <type>jar</type>
       </dependency>
@@ -125,14 +125,14 @@ due to Origin doesn't push to center maven repository, so you need to clone this
 ### Configuration
 
 - create a spi file in `META-INF`, then add your service into the file.
-    - Web application，add a spi file named `com.originframework.web.spi.OriginRouter` in `META-INF`, then create a class implement `com.originframework.web.spi.OriginRouter` and add apis in `route()` method.
+    - Web application，add a spi file named `com.origin.framework.spi.OriginRouter` in `META-INF`, then create a class implement `com.origin.framework.spi.OriginRouter` and add apis in `route()` method.
       Example:
 
     ```java
     
     public class BlogRouter implements OriginRouter {
         @Override
-        public void router(OriginVertxContext originVertxContext, OriginConfig originConfig) {
+        public void router(OriginWebVertxContext originVertxContext, OriginConfig originConfig) {
     
             originVertxContext.getRouter().get("/blog")
                     .handler(ctx -> {
@@ -155,7 +155,7 @@ due to Origin doesn't push to center maven repository, so you need to clone this
         }
     }
     ```
-    - Standard application，add a spi file named `com.originframework.web.spi.OriginTask` in `META-INF`, then create a class implement `com.originframework.web.spi.OriginTask` and add business logic in `run()` method.
+    - Standard application，add a spi file named `com.origin.framework.spi.OriginTask` in `META-INF`, then create a class implement `com.origin.framework.spi.OriginTask` and add business logic in `run()` method.
       Example:
 
     ```java
