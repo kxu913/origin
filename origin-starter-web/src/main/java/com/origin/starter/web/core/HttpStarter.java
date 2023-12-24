@@ -1,7 +1,8 @@
 package com.origin.starter.web.core;
 
-import com.origin.starter.web.domain.OriginConfig;
-import com.origin.starter.web.domain.OriginVertxContext;
+
+import com.origin.framework.core.bean.OriginConfig;
+import com.origin.framework.core.bean.OriginWebVertxContext;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 public class HttpStarter {
 
     private final OriginConfig originConfig;
-    private final OriginVertxContext vertxContext;
+    private final OriginWebVertxContext vertxContext;
 
-    public HttpStarter(OriginVertxContext vertxContext, OriginConfig originConfig) {
+    public HttpStarter(OriginWebVertxContext vertxContext, OriginConfig originConfig) {
         this.originConfig = originConfig;
         this.vertxContext = vertxContext;
 

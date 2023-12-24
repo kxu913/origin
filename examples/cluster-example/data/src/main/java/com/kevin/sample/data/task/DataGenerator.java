@@ -1,9 +1,10 @@
 package com.kevin.sample.data.task;
 
-import com.origin.starter.app.domain.OriginAppConfig;
-import com.origin.starter.app.domain.OriginAppVertxContext;
-import com.origin.starter.app.handler.AsyncResultHandler;
-import com.origin.starter.app.spi.OriginTask;
+import com.origin.framework.core.bean.OriginVertxContext;
+import com.origin.framework.core.bean.OriginConfig;
+
+import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.spi.OriginTask;
 import io.vertx.core.Future;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
@@ -19,7 +20,7 @@ public class DataGenerator implements OriginTask {
 
 
     @Override
-    public void run(OriginAppVertxContext originAppVertxContext, OriginAppConfig originAppConfig) {
+    public void run(OriginVertxContext originAppVertxContext, OriginConfig originAppConfig) {
 
         /**
          * simplify example
