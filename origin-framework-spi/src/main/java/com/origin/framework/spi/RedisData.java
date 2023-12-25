@@ -12,8 +12,24 @@ public interface RedisData extends OriginData {
      *
      * @return key
      */
-    default public String redisKey() {
+    default String redisKey() {
         return "";
+    }
+
+    /**
+     * key that will store in redis set structure.
+     *
+     * @return key
+     */
+    String key();
+
+    /**
+     * determine whether you need cache object.
+     *
+     * @return true or false
+     */
+    default boolean needCacheObject() {
+        return false;
     }
 
     /**
@@ -21,7 +37,9 @@ public interface RedisData extends OriginData {
      *
      * @return key
      */
-    default public String redisHashKey() {
+    default String redisHashKey() {
         return "";
     }
+
+
 }

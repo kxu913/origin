@@ -1,2 +1,6 @@
 com\origin\framework\spi\OriginRouter.class
+com\origin\framework\spi\ESData.class
+com\origin\framework\spi\RedisData.class
+com\origin\framework\spi\DBData.class
 com\origin\framework\spi\OriginTask.class
+com\origin\framework\spi\OriginData.class
