@@ -13,8 +13,8 @@ It supports the following applications:
 Configure firstly, due to reactive methodology, the first thing is get configuration then initialize class, then the instance of class store in BeanFactory.
 
 Use SPI to inject basic class.
-- Web basic class, `com.origin.starter.web.spi.OriginRouter`
-- Standard basic class, `com.origin.starter.app.spi.OriginTask`
+- Web basic class, `com.origin.framework.spi.OriginRouter`
+- Standard basic class, `com.origin.framework.spi.OriginTask`
 
 Provide Single Patten and Cluster Patten.
 - Single Patten, it's a separate instance.
