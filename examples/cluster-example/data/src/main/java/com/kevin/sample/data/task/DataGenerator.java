@@ -38,7 +38,7 @@ public class DataGenerator implements OriginTask {
             });
             asyncFile.handler(recordParser).endHandler(v -> {
                 asyncFile.close();
-
+                originAppConfig.getEventBus().publish("data", "end");
                 log.info("cost {}s to handle {} data.", Duration.between(startedTime, LocalDateTime.now()).getSeconds(), count);
             });
         });

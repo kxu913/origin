@@ -27,8 +27,10 @@
     <dependencies>
         <dependency>
             <groupId>com.originframework</groupId>
-            <artifactId>origin-framework-spi</artifactId>
+            <artifactId>origin-starter-common</artifactId>
             <version>${origin.version}</version>
+            <type>jar</type>
+
         </dependency>
 
         <dependency>
