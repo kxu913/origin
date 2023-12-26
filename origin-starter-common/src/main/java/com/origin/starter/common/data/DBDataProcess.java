@@ -26,7 +26,7 @@ public class DBDataProcess {
             String end = message.body().toString();
             if (end.equals("end")) {
                 batchInsert(sqlClient, sql, dbDataList);
-                log.info("reach end.");
+                log.info("batch process reached end.");
                 return;
             }
             try {

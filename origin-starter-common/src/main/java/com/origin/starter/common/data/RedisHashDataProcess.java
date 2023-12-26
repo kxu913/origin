@@ -32,6 +32,7 @@ public class RedisHashDataProcess {
                     originConfig.getEventBus().consumer(queue, message -> {
                         String msg = message.body().toString();
                         if (msg.equals("end")) {
+                            log.info("batch process reached end.");
                             return;
                         }
                         JsonObject jsonObject = new JsonObject(message.body().toString());
