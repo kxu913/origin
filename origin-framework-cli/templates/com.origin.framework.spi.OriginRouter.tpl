@@ -1,0 +1,1 @@
+{{ .Group}}.{{ .ArtifactId}}.router.SampleRouter
