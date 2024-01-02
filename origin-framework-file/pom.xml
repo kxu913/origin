@@ -1,11 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.originframework</groupId>
-    <artifactId>origin-starter-app</artifactId>
+    <artifactId>origin-framework-file</artifactId>
     <version>2.1</version>
-    <name>origin-starter-app</name>
+
+    <name>Origin Framework File</name>
     <url>https://kevin913.com.cn</url>
+    <description>it used to simplify process of file operations</description>
 
     <licenses>
         <license>
@@ -27,23 +31,15 @@
     <dependencies>
         <dependency>
             <groupId>com.originframework</groupId>
-            <artifactId>origin-starter-common</artifactId>
+            <artifactId>origin-framework-core</artifactId>
             <version>${origin.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <scope>compile</scope>
-            <version>2.15.0</version>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.16.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-zookeeper</artifactId>
-            <version>${vertx.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -63,4 +59,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
