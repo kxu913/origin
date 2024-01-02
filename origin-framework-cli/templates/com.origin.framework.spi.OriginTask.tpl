@@ -1,1 +1,0 @@
-{{ .Group}}.{{ .ArtifactId}}.task.SampleTask
