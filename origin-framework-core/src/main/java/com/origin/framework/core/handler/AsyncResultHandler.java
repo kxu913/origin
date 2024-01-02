@@ -36,7 +36,6 @@ public class AsyncResultHandler {
      * @param <T>  success object that used to handle.
      * @param <R>  response object.
      * @return R
-     * @throws InvalidResponseException
      */
     public static <T, R> R handleAsyncResultWithReturn(AsyncResult<T> ar, Function<T, R> func) {
         if (ar.succeeded()) {
@@ -57,11 +56,10 @@ public class AsyncResultHandler {
      * @param <T>     success object that used to handle
      */
     public static <T> void handleFuture(Future<T> future, Consumer<T> func) {
-        future.onComplete(ar -> {
-            handleAsyncResult(ar, func);
-        }).onFailure(err -> {
-            log.error(err.getMessage(), err);
-        });
+        future.onSuccess(func::accept)
+                .onFailure(err -> {
+                    log.error(err.getMessage(), err);
+                });
 
     }
 
@@ -90,11 +88,10 @@ public class AsyncResultHandler {
      * @param func   the function that handle the success object.
      * @param <T>    success object that used to handle as input.
      * @param <R>    response object.
-     * @return R
      */
     public static <T, R> void handleFutureWithReturn(Future<T> future, RoutingContext ctx, Function<T, R> func) {
-        future.onComplete(ar -> {
-            ctx.json(handleAsyncResultWithReturn(ar, func));
+        future.onSuccess(ar -> {
+            ctx.json(func.apply(ar));
         }).onFailure(err -> {
             log.error(err.getMessage(), err);
             ctx.fail(500, err);
@@ -111,12 +108,11 @@ public class AsyncResultHandler {
      * @param <T>     success object that used to handle
      */
     public static <T> void handleFuture(Future<T> future, RoutingContext ctx, Consumer<T> func) {
-        future.onComplete(ar -> {
-            handleAsyncResult(ar, ctx, func);
-        }).onFailure(err -> {
-            log.error(err.getMessage(), err);
-            ctx.fail(500, err);
-        });
+        future.onSuccess(func::accept)
+                .onFailure(err -> {
+                    log.error(err.getMessage(), err);
+                    ctx.fail(500, err);
+                });
 
     }
 

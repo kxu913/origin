@@ -1,31 +1,25 @@
 package com.kevin.sample.es.domain;
 
+import com.origin.framework.spi.ESData;
+import lombok.Data;
+
 import java.util.Date;
 
-public class Demo {
+@Data
+public class Demo implements ESData {
 
 
     private long id;
     private Date date;
-    public long getId() {
-        return id;
+
+
+    @Override
+    public String esIndex() {
+        return "idx-demo";
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public String queueName() {
+        return "demo";
     }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-
-
-
-
-
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e58ca61e-fa87-4e14-b35b-e580542ebd84" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../origin-starter-app/src/main/java/com/origin/starter/app/task/DBDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-app/src/main/java/com/origin/starter/app/task/ESDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-app/src/main/java/com/origin/starter/app/task/RedisHashDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-app/src/main/java/com/origin/starter/app/task/RedisSetDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/router/DBDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/router/ESDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/router/RedisHashDataRouter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/router/RedisSetDataRouter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-core/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-core/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-core/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-core/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-core/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-core/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-core/target/origin-framework-core-2.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-core/target/origin-framework-core-2.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/DBData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/DBData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/ESData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/ESData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/RedisData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/src/main/java/com/origin/framework/spi/RedisData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-framework-spi/target/origin-framework-spi-2.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-framework-spi/target/origin-framework-spi-2.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-starter-web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-starter-web/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/core/OriginRouterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../origin-starter-web/src/main/java/com/origin/starter/web/core/OriginRouterFactory.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2a1UyJa287Wgij0BcAuPfik5jTQ" />
+  <component name="ProjectViewState">
+    <option name="flattenPackages" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "develop",
+    "ignore.virus.scanning.warn.message": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e58ca61e-fa87-4e14-b35b-e580542ebd84" name="Changes" comment="" />
+      <created>1703485833646</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703485833646</updated>
+    </task>
+    <servers />
+  </component>
+</project>

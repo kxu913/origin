@@ -12,14 +12,23 @@ public interface ESData extends OriginData {
      *
      * @return key
      */
-    public String esIndex();
+    String esIndex();
+
+    /**
+     * id of index.
+     *
+     * @return id
+     */
+    String getId();
 
     /**
      * batch size when insert origin data to es.
-     * @return
+     *
+     * @return batch size
      */
-    default public int batchSize() {
+    default int esBatchSize() {
         return 1000;
     }
+
 
 }
