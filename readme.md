@@ -121,6 +121,17 @@ due to Origin doesn't push to center maven repository, so you need to clone this
           <type>jar</type>
       </dependency>
       ```
+you can use [origin-framework-cli](origin-framework-auto-genrator/origin-framework-cli) to generate sample codes, please update [cli.json](origin-framework-auto-genrator/cli.json) according by your requirement.
+- Project(string): project name. 
+- Port(int): specify port if it's a web application.
+- Cluster(boolean): specify the project run as single node or cluster node.
+- Group(string): group in `pom.xml`.
+- ArtifactId(string): artifcatId in `pom.xml`, and use group+artifactId as basic package.
+- Version(string): project version.
+- OriginVersion(string): origin version that you use in the project, current it has 1.0, 2.0 and 2.1.
+- App(boolean): if true, `conf.json` will contains default configuration of database.
+- ES(boolean): if true, `conf.json` will contains default configuration of elastic search.
+- Redis(boolean): if ture, `conf.json` will contains default configuration of redis.
 
 ### Configuration
 
