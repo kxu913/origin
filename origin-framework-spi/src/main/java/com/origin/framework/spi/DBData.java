@@ -1,6 +1,5 @@
 package com.origin.framework.spi;
 
-import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.Tuple;
 
 /**
