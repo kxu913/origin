@@ -2,7 +2,6 @@ package com.origin.framework.core.factory;
 
 
 import com.origin.framework.core.bean.OriginVertxContext;
-
 import com.origin.framework.core.exception.InvalidBeanException;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.core.Future;
@@ -32,9 +31,6 @@ public class OriginBeanFactory<T extends OriginVertxContext> {
     public OriginBeanFactory(T vc) {
         this.vc = vc;
         beanConfigs = new HashMap<>();
-        beanConfigs.put("db", null);
-        beanConfigs.put("redis", null);
-        beanConfigs.put("es", null);
     }
 
     public Future<Map<String, JsonObject>> loadBeanConfig() {
@@ -46,39 +42,42 @@ public class OriginBeanFactory<T extends OriginVertxContext> {
                             JsonObject config = arJson.result();
                             splitConfig(config);
                             ar.complete(beanConfigs);
-
                         } else {
                             log.error("get config error.", arJson.cause());
                             ar.fail(arJson.cause());
                         }
-                    }).onFailure(err -> {
-                        log.error("something went wrong.", err);
-                        ar.fail(err);
                     });
         });
 
     }
 
     private void splitConfig(JsonObject config) {
-        beanConfigs.forEach((k, v) -> {
-            if (config.containsKey(k)) {
-                JsonObject childConfig = config.getJsonObject(k);
-                beanConfigs.put(k, childConfig);
+        config.getMap().forEach((k, v) -> {
+            if (v instanceof Map<?, ?>) {
+                beanConfigs.put(k, new JsonObject((Map<String, Object>) v));
             }
         });
     }
 
     public SqlClient getSqlClient() {
-        JsonObject dbConfig = beanConfigs.get("db");
+        return getSqlClient("db");
+    }
+
+    public SqlClient getSqlClient(String name) {
+        JsonObject dbConfig = beanConfigs.get(name);
         if (dbConfig == null) {
-            throw new InvalidBeanException("db config is null, set db in conf/config.json.");
+            throw new InvalidBeanException(name + " config is null, set " + name + " in conf/config.json.");
         }
         return PgPool.client(
                 vc.getVertx(), new PgConnectOptions(dbConfig), new PoolOptions(dbConfig.getJsonObject("pool")));
     }
 
     public Redis getRedisClient() {
-        JsonObject redisConfig = beanConfigs.get("redis");
+        return getRedisClient("redis");
+    }
+
+    public Redis getRedisClient(String name) {
+        JsonObject redisConfig = beanConfigs.get(name);
         if (redisConfig == null) {
             throw new InvalidBeanException("redis config is null, set redis in conf/config.json.");
         }
@@ -86,19 +85,31 @@ public class OriginBeanFactory<T extends OriginVertxContext> {
     }
 
     public RestClient getESRestClient() {
-        JsonObject esConfig = beanConfigs.get("es");
+        return this.getESRestClient("es");
+
+    }
+
+    public RestClient getESRestClient(String name) {
+        JsonObject esConfig = beanConfigs.get(name);
         if (esConfig == null) {
             throw new InvalidBeanException("elastic search config is null, set es in conf/config.json.");
         }
-        return RestClient.builder(new HttpHost(esConfig.getString("host"), esConfig.getInteger("port"), esConfig.getString("schema")))
-                .setDefaultHeaders(new Header[]{
-                        new BasicHeader("Content-type", esConfig.getString("data-type"))
-                }).setHttpClientConfigCallback(httpAsyncClientBuilder ->
+        return RestClient.builder(
+                        new HttpHost(
+                                esConfig.getString("host"),
+                                esConfig.getInteger("port"),
+                                esConfig.getString("schema")))
+                .setDefaultHeaders(
+                        new Header[]{
+                                new BasicHeader("Content-type", esConfig.getString("data-type"))
+                        })
+                .setHttpClientConfigCallback(httpAsyncClientBuilder ->
                         httpAsyncClientBuilder
                                 .addInterceptorLast((HttpResponseInterceptor) (response, context) ->
                                         response.setHeader("X-Elastic-Product", esConfig.getString("product-id"))
                                 )
-                                .setMaxConnPerRoute(100)).build();
+                                .setMaxConnPerRoute(100))
+                .build();
     }
 
 }

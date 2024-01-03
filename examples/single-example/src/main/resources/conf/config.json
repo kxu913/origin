@@ -11,5 +11,18 @@
     "pool": {
       "maxSize": 20
     }
+  },
+  "remote-db": {
+    "port": 5432,
+    "host": "192.168.1.10",
+    "user": "postgres",
+    "password": "888888",
+    "database": "blog2",
+    "pool": {
+      "maxSize": 20
+    }
+  },
+  "custom-config": {
+    "name": "Origin Framework"
   }
 }
