@@ -17,7 +17,7 @@
     "host": "192.168.1.10",
     "user": "postgres",
     "password": "888888",
-    "database": "blog2",
+    "database": "blog_detail",
     "pool": {
       "maxSize": 20
     }
