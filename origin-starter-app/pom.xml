@@ -30,6 +30,7 @@
             <artifactId>origin-starter-common</artifactId>
             <version>${origin.version}</version>
             <type>jar</type>
+
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
