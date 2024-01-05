@@ -19,6 +19,7 @@ public class ResultReport {
     private AtomicInteger loadedSize;
     private AtomicInteger filteredSize;
     private AtomicInteger errorSize;
+    private AtomicInteger fileIndex;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -39,6 +40,7 @@ public class ResultReport {
         this.loadedSize = new AtomicInteger(0);
         this.filteredSize = new AtomicInteger(0);
         this.errorSize = new AtomicInteger(0);
+        this.fileIndex = new AtomicInteger(0);
         this.startTime = LocalDateTime.now();
         this.additionalInfo = new JsonObject();
         return this;

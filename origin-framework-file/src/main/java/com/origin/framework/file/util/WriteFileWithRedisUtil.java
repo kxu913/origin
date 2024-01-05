@@ -3,6 +3,7 @@ package com.origin.framework.file.util;
 
 import com.origin.framework.core.bean.OriginWebVertxContext;
 import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.file.domain.HashDataRequest;
 import com.origin.framework.file.domain.ResultReport;
 import com.origin.framework.file.domain.WriteFileWithRedisRequest;
 import io.vertx.core.Future;
@@ -11,6 +12,7 @@ import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.parsetools.RecordParser;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.redis.client.Command;
 import io.vertx.redis.client.RedisConnection;
 import io.vertx.redis.client.Request;
 import io.vertx.redis.client.Response;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -94,7 +97,8 @@ public class WriteFileWithRedisUtil {
     public static void writeFileWithRedis(OriginWebVertxContext originVertxContext,
                                           Future<RedisConnection> redisConnectionFuture,
                                           WriteFileWithRedisRequest request,
-                                          Function<String, Request> fn, BiConsumer<ResultReport, Response> consumer) {
+                                          Function<String, Request> fn,
+                                          BiConsumer<ResultReport, Response> consumer) {
         Optional<String> file = Optional.of(request.getFile());
         ResultReport resultReport = new ResultReport().start();
         AsyncResultHandler.handleFuture(redisConnectionFuture, connection -> {
@@ -130,6 +134,28 @@ public class WriteFileWithRedisUtil {
 
     }
 
+    public static void writeFileFromHashData(RoutingContext ctx,
+                                             RedisConnection connection,
+                                             String index,
+                                             String pattern,
+                                             int batchSize,
+                                             Consumer<HashDataRequest> fn) {
+        Request request = Request.cmd(Command.HSCAN).arg(index).arg(0).arg("match").arg(pattern).arg("count").arg(batchSize);
+        Future<Response> firstFuture = connection.send(request);
+
+        ResultReport resultReport = new ResultReport().start();
+        Future<Response> lastFuture = firstFuture.compose(response -> {
+            resultReport.getFileIndex().incrementAndGet();
+            fn.accept(new HashDataRequest(response).withResultReport(resultReport));
+            return retrieveHashData(connection, index, pattern, batchSize, response, resultReport, fn);
+        });
+        AsyncResultHandler.handleFuture(lastFuture, ctx, v -> {
+            connection.close();
+            ctx.json(resultReport.end());
+        });
+
+    }
+
 
     private static RecordParser createRecordParser(WriteFileWithRedisRequest request, Function<String, Request> fn, RedisConnection connection, ResultReport resultReport, Buffer buffer) {
         return RecordParser.newDelimited(request.getDelimiter(), bufferLine -> {
@@ -154,6 +180,31 @@ public class WriteFileWithRedisUtil {
             resultReport.getTotalSize().incrementAndGet();
 
         });
+    }
+
+    private static Future<Response> retrieveHashData(RedisConnection connection,
+                                                     String index,
+                                                     String pattern,
+                                                     int batchSize,
+                                                     Response response,
+                                                     ResultReport resultReport,
+                                                     Consumer<HashDataRequest> fn) {
+        int cursor = response.get(0).toInteger();
+        log.info("cursor move to {}", cursor);
+        if (cursor == 0) {
+            log.info("cursor reach end.");
+            resultReport.getFileIndex().incrementAndGet();
+            fn.accept(new HashDataRequest(response).withResultReport(resultReport));
+            return Future.succeededFuture(response);
+        } else {
+            resultReport.getFileIndex().incrementAndGet();
+            fn.accept(new HashDataRequest(response).withResultReport(resultReport));
+            Request request = Request.cmd(Command.HSCAN).arg(index).arg(cursor).arg("match").arg(pattern).arg("count").arg(batchSize);
+            Future<Response> responseFuture = connection.send(request);
+            return responseFuture.compose(r -> retrieveHashData(connection, index, pattern, batchSize, r, resultReport, fn));
+        }
+
+
     }
 
 }
