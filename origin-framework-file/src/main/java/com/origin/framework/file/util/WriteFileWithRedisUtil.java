@@ -134,6 +134,15 @@ public class WriteFileWithRedisUtil {
 
     }
 
+    /**
+     * used to load Redis hash data.
+     * @param ctx RoutingContext
+     * @param connection RedisConnection
+     * @param index redis index
+     * @param pattern pattern used to search
+     * @param batchSize batch size
+     * @param fn specify how to handle response
+     */
     public static void writeFileFromHashData(RoutingContext ctx,
                                              RedisConnection connection,
                                              String index,
