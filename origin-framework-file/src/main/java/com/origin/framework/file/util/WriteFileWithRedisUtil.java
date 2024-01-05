@@ -136,19 +136,20 @@ public class WriteFileWithRedisUtil {
 
     /**
      * used to load Redis hash data.
-     * @param ctx RoutingContext
+     *
+     * @param ctx        RoutingContext
      * @param connection RedisConnection
-     * @param index redis index
-     * @param pattern pattern used to search
-     * @param batchSize batch size
-     * @param fn specify how to handle response
+     * @param index      redis index
+     * @param pattern    pattern used to search
+     * @param batchSize  batch size
+     * @param fn         specify how to handle response
      */
-    public static void writeFileFromHashData(RoutingContext ctx,
-                                             RedisConnection connection,
-                                             String index,
-                                             String pattern,
-                                             int batchSize,
-                                             Consumer<HashDataRequest> fn) {
+    public static void loadHashData(RoutingContext ctx,
+                                    RedisConnection connection,
+                                    String index,
+                                    String pattern,
+                                    int batchSize,
+                                    Consumer<HashDataRequest> fn) {
         Request request = Request.cmd(Command.HSCAN).arg(index).arg(0).arg("match").arg(pattern).arg("count").arg(batchSize);
         Future<Response> firstFuture = connection.send(request);
 
@@ -165,6 +166,35 @@ public class WriteFileWithRedisUtil {
 
     }
 
+    /**
+     * used to load Redis hash data.
+     *
+     * @param connection RedisConnection
+     * @param index      redis index
+     * @param pattern    pattern used to search
+     * @param batchSize  batch size
+     * @param fn         specify how to handle response
+     */
+    public static void loadHashData(
+            RedisConnection connection,
+            String index,
+            String pattern,
+            int batchSize,
+            Consumer<HashDataRequest> fn) {
+        Request request = Request.cmd(Command.HSCAN).arg(index).arg(0).arg("match").arg(pattern).arg("count").arg(batchSize);
+        Future<Response> firstFuture = connection.send(request);
+
+        ResultReport resultReport = new ResultReport().start();
+        Future<Response> lastFuture = firstFuture.compose(response -> {
+            resultReport.getFileIndex().incrementAndGet();
+            fn.accept(new HashDataRequest(response).withResultReport(resultReport));
+            return retrieveHashData(connection, index, pattern, batchSize, response, resultReport, fn);
+        });
+        AsyncResultHandler.handleFuture(lastFuture, v -> {
+            connection.close();
+        });
+
+    }
 
     private static RecordParser createRecordParser(WriteFileWithRedisRequest request, Function<String, Request> fn, RedisConnection connection, ResultReport resultReport, Buffer buffer) {
         return RecordParser.newDelimited(request.getDelimiter(), bufferLine -> {
