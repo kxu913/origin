@@ -1,10 +1,14 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"os"
 )
+
+//go:embed .mvn/*
+var mvnFiles embed.FS
 
 var (
 	SRC_FOLDER           = "src"
@@ -13,7 +17,8 @@ var (
 	RESOURCE_FOLDER      = fmt.Sprintf("%s/resources", MAIN_FOLDER)
 	RESOURCE_CONF_FOLDER = fmt.Sprintf("%s/resources/conf", MAIN_FOLDER)
 	SPI_FOLDER           = fmt.Sprintf("%s/META-INF/services", RESOURCE_FOLDER)
-	MVN_WRAPPER_FOLDER   = ".mvn/wrapper"
+	MVN_FOLDER           = ".mvn"
+	MVN_WRAPPER_FOLDER   = "wrapper"
 	MVN_FILES            = []string{"mvnw", "mvnw.cmd"}
 	MVN_WRAPPER_FILES    = []string{"maven-wrapper.jar", "maven-wrapper.properties", "MavenWrapperDownloader.java"}
 	FOLDERS              = []string{SRC_FOLDER, MVN_WRAPPER_FOLDER, MAIN_FOLDER, JAVA_FOLDER, RESOURCE_FOLDER, RESOURCE_CONF_FOLDER, SPI_FOLDER}
@@ -52,7 +57,8 @@ func PrepareFolder(config *Config) []string {
 
 func CreateMvnEnv(config *Config) {
 	for _, mvn := range MVN_FILES {
-		source, sourceErr := os.Open(fmt.Sprintf("./%s", mvn))
+
+		source, sourceErr := mvnFiles.Open(fmt.Sprintf("%s/%s", MVN_FOLDER, mvn))
 		if sourceErr != nil {
 			panic(sourceErr)
 		}
@@ -66,7 +72,7 @@ func CreateMvnEnv(config *Config) {
 	}
 	for _, mvn := range MVN_WRAPPER_FILES {
 
-		source, sourceErr := os.Open(fmt.Sprintf("%s/%s", MVN_WRAPPER_FOLDER, mvn))
+		source, sourceErr := mvnFiles.Open(fmt.Sprintf("%s/%s/%s", MVN_FOLDER, MVN_WRAPPER_FOLDER, mvn))
 		if sourceErr != nil {
 			panic(sourceErr)
 		}
