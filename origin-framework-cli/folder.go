@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -12,7 +13,10 @@ var (
 	RESOURCE_FOLDER      = fmt.Sprintf("%s/resources", MAIN_FOLDER)
 	RESOURCE_CONF_FOLDER = fmt.Sprintf("%s/resources/conf", MAIN_FOLDER)
 	SPI_FOLDER           = fmt.Sprintf("%s/META-INF/services", RESOURCE_FOLDER)
-	FOLDERS              = []string{SRC_FOLDER, MAIN_FOLDER, JAVA_FOLDER, RESOURCE_FOLDER, RESOURCE_CONF_FOLDER, SPI_FOLDER}
+	MVN_WRAPPER_FOLDER   = ".mvn/wrapper"
+	MVN_FILES            = []string{"mvnw", "mvnw.cmd"}
+	MVN_WRAPPER_FILES    = []string{"maven-wrapper.jar", "maven-wrapper.properties", "MavenWrapperDownloader.java"}
+	FOLDERS              = []string{SRC_FOLDER, MVN_WRAPPER_FOLDER, MAIN_FOLDER, JAVA_FOLDER, RESOURCE_FOLDER, RESOURCE_CONF_FOLDER, SPI_FOLDER}
 )
 
 func PrepareFolder(config *Config) []string {
@@ -31,6 +35,7 @@ func PrepareFolder(config *Config) []string {
 			subCodeFolder = fmt.Sprintf("%s/%s", codeFolder, "router")
 		}
 		os.MkdirAll(subCodeFolder, 0755)
+		CreateMvnEnv(config)
 
 	}
 
@@ -41,6 +46,40 @@ func PrepareFolder(config *Config) []string {
 		fmt.Sprintf("%s/%s", config.Project, SPI_FOLDER),
 		codeFolder,
 		subCodeFolder,
+	}
+
+}
+
+func CreateMvnEnv(config *Config) {
+	for _, mvn := range MVN_FILES {
+		source, sourceErr := os.Open(fmt.Sprintf("./%s", mvn))
+		if sourceErr != nil {
+			panic(sourceErr)
+		}
+		defer source.Close()
+		destination, _ := os.Create(fmt.Sprintf("%s/%s", config.Project, mvn))
+		defer destination.Close()
+		_, err := io.Copy(destination, source)
+		if err != nil {
+			panic(err)
+		}
+	}
+	for _, mvn := range MVN_WRAPPER_FILES {
+
+		source, sourceErr := os.Open(fmt.Sprintf("%s/%s", MVN_WRAPPER_FOLDER, mvn))
+		if sourceErr != nil {
+			panic(sourceErr)
+		}
+		defer source.Close()
+		destination, destEr_ := os.Create(fmt.Sprintf("%s/%s/%s", config.Project, MVN_WRAPPER_FOLDER, mvn))
+		if destEr_ != nil {
+			panic(sourceErr)
+		}
+		defer destination.Close()
+		_, err := io.Copy(destination, source)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }
