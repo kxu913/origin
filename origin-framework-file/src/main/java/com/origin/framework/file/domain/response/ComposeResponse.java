@@ -1,5 +1,6 @@
-package com.origin.framework.file.domain;
+package com.origin.framework.file.domain.response;
 
+import com.origin.framework.file.domain.result.ResultReport;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.redis.client.RedisConnection;
 import lombok.Data;

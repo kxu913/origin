@@ -3,9 +3,9 @@ package com.origin.framework.file.util;
 
 import com.origin.framework.core.bean.OriginWebVertxContext;
 import com.origin.framework.core.handler.AsyncResultHandler;
-import com.origin.framework.file.domain.ComposeRequest;
-import com.origin.framework.file.domain.ResultReport;
-import com.origin.framework.file.domain.WriteFileRequest;
+import com.origin.framework.file.domain.response.ComposeResponse;
+import com.origin.framework.file.domain.result.ResultReport;
+import com.origin.framework.file.domain.request.WriteFileRequest;
 import io.vertx.core.Future;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
@@ -35,11 +35,13 @@ public class WriteFileUtil {
     public static void writeFile(OriginWebVertxContext originVertxContext,
                                  RoutingContext ctx,
                                  WriteFileRequest request,
-                                 Consumer<ComposeRequest> fn) {
+                                 Consumer<ComposeResponse> fn) {
         Optional<String> file = Optional.of(request.getFile());
         Optional<String> destFile = Optional.of(request.getDestFile());
         ResultReport resultReport = new ResultReport().start();
-
+        if (log.isDebugEnabled()) {
+            log.debug("receive a request {} that use to retrieve data from one file and write to another.", request);
+        }
         Future<AsyncFile> asyncFileFuture = originVertxContext.getFs().open(file.get(), new OpenOptions());
         AsyncResultHandler.handleFuture(asyncFileFuture, ctx, asyncFile -> {
 
@@ -69,11 +71,13 @@ public class WriteFileUtil {
      */
     public static void writeFile(OriginWebVertxContext originVertxContext,
                                  WriteFileRequest request,
-                                 Consumer<ComposeRequest> fn) {
+                                 Consumer<ComposeResponse> fn) {
         Optional<String> file = Optional.of(request.getFile());
         Optional<String> destFile = Optional.of(request.getDestFile());
+        if (log.isDebugEnabled()) {
+            log.debug("receive a request {} that use to retrieve data from one file and write to another.", request);
+        }
         ResultReport resultReport = new ResultReport().start();
-
         Future<AsyncFile> asyncFileFuture = originVertxContext.getFs().open(file.get(), new OpenOptions());
         AsyncResultHandler.handleFuture(asyncFileFuture, asyncFile -> {
             asyncFile.handler(createRecordParser(request, fn, resultReport)).endHandler(v -> {
@@ -90,12 +94,15 @@ public class WriteFileUtil {
 
     }
 
-    private static RecordParser createRecordParser(WriteFileRequest request, Consumer<ComposeRequest> fn, ResultReport resultReport) {
+    private static RecordParser createRecordParser(WriteFileRequest request, Consumer<ComposeResponse> fn, ResultReport resultReport) {
         return RecordParser.newDelimited(request.getDelimiter(), bufferLine -> {
             String line = bufferLine.toString(request.getEncode());
+            if (log.isDebugEnabled()) {
+                log.debug("line: {}", line);
+            }
             if (request.isIgnoreFirstLine() && resultReport.getTotalSize().get() > 0) {
                 try {
-                    fn.accept(new ComposeRequest(line).withResultReport(resultReport).withBuffer(request.getBuffer()));
+                    fn.accept(new ComposeResponse(line).withResultReport(resultReport).withBuffer(request.getBuffer()));
                 } catch (Exception e) {
                     log.error("handle line failed, caused by {}", e.getMessage(), e);
                     resultReport.getErrorSize().incrementAndGet();
@@ -103,7 +110,7 @@ public class WriteFileUtil {
 
             } else {
                 try {
-                    fn.accept(new ComposeRequest(line).withResultReport(resultReport).withBuffer(request.getBuffer()));
+                    fn.accept(new ComposeResponse(line).withResultReport(resultReport).withBuffer(request.getBuffer()));
                 } catch (Exception e) {
                     log.error("handle line failed, caused by {}", e.getMessage(), e);
                     resultReport.getErrorSize().incrementAndGet();
