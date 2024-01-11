@@ -48,7 +48,11 @@ public class OriginTaskFactory {
 
     public void register() {
         log.info("**** tasks {} had been registered.", tasks);
-        tasks.forEach(r -> r.run(this.vc, this.cf));
+        tasks.forEach(r -> {
+            if (r.enable()) {
+                r.run(this.vc, this.cf);
+            }
+        });
 
     }
 

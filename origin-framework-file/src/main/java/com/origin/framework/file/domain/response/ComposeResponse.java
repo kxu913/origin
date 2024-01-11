@@ -5,27 +5,27 @@ import io.vertx.redis.client.RedisConnection;
 import lombok.Data;
 
 @Data
-public class ComposeRequest {
+public class ComposeResponse {
     private String line;
     private RedisConnection connection;
     private ResultReport resultReport;
     private Buffer buffer;
 
-    public ComposeRequest(String line) {
+    public ComposeResponse(String line) {
         this.line = line;
     }
 
-    public ComposeRequest withConnection(RedisConnection connection) {
+    public ComposeResponse withConnection(RedisConnection connection) {
         this.connection = connection;
         return this;
     }
 
-    public ComposeRequest withResultReport(ResultReport resultReport) {
+    public ComposeResponse withResultReport(ResultReport resultReport) {
         this.resultReport = resultReport;
         return this;
     }
 
-    public ComposeRequest withBuffer(Buffer buffer) {
+    public ComposeResponse withBuffer(Buffer buffer) {
         if (buffer != null) {
             this.buffer = buffer;
         }
