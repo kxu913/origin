@@ -5,5 +5,9 @@ import com.origin.framework.core.bean.OriginVertxContext;
 import com.origin.framework.core.bean.OriginConfig;
 
 public interface OriginTask {
-    public void run(OriginVertxContext vc, OriginConfig cf);
+    void run(OriginVertxContext vc, OriginConfig cf);
+
+    default boolean enable() {
+        return true;
+    }
 }

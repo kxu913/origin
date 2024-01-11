@@ -1,7 +1,19 @@
-package com.origin.framework.file.domain;
+package com.origin.framework.file.domain.request;
 
 import lombok.Data;
 
+import static com.origin.framework.file.constants.Constants.DELIMITER;
+import static com.origin.framework.file.constants.Constants.ENCODE;
+
+/**
+ * Basic file request, that contains file, line delimiter, encode and parse first line or not.
+ * default value of the fields is:
+ * delimiter: "\n"
+ * encode: "UTF-8"
+ * ignoreFirstLine: true
+ *
+ * @author Kevin Xu
+ */
 @Data
 public class BasicFileRequest {
     private String file;
@@ -10,6 +22,9 @@ public class BasicFileRequest {
     private boolean ignoreFirstLine;
 
     public BasicFileRequest(String file) {
+        this.delimiter = DELIMITER;
+        this.encode = ENCODE;
+        this.ignoreFirstLine = true;
         this.file = file;
     }
 
