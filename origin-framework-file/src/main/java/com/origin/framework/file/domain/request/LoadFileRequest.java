@@ -12,6 +12,7 @@ import lombok.Getter;
 @Getter
 public class LoadFileRequest extends BasicFileRequest {
     private RedisConnection connection;
+    private String index;
 
 
     public LoadFileRequest(String file) {
@@ -36,6 +37,11 @@ public class LoadFileRequest extends BasicFileRequest {
 
     public LoadFileRequest includeFirstLine() {
         super.includeFirstLine();
+        return this;
+    }
+
+    public LoadFileRequest withIndex(String index) {
+        this.index = index;
         return this;
     }
 
