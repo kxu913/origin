@@ -71,7 +71,7 @@ public class LoadFileUtil {
     }
 
     /**
-     * Load file, return the result report include statistics information to http response.
+     * Load file, log resultReport.
      *
      * @param originVertxContext the context of the original WebVertx
      * @param request            the file handler request
@@ -106,6 +106,15 @@ public class LoadFileUtil {
 
     }
 
+    /**
+     * Load file, use batch mode, batch size is 10,000, only support set data structure,
+     * return the result report include statistics information to http response.
+     *
+     * @param originVertxContext the context of the original WebVertx
+     * @param ctx                the routing context
+     * @param request            the file handler request
+     * @param fn                 the function, accept line and return key which store in redis set structure.
+     */
     public static void batchLoadFile(OriginWebVertxContext originVertxContext,
                                      RoutingContext ctx,
                                      LoadFileRequest request,
@@ -167,6 +176,14 @@ public class LoadFileUtil {
 
     }
 
+    /**
+     * Load file, use batch mode, batch size is 10,000, only support set data structure,
+     * LOG result report include statistics information.
+     *
+     * @param originVertxContext the context of the original WebVertx
+     * @param request            the file handler request
+     * @param fn                 the function, accept line and return key which store in redis set structure.
+     */
     public static void batchLoadFile(OriginWebVertxContext originVertxContext,
                                      LoadFileRequest request,
                                      Function<String, String> fn) {
@@ -233,11 +250,10 @@ public class LoadFileUtil {
             }
             try {
                 String key = fn.apply(line);
-                if (cursor.incrementAndGet() <= batchSize.get()) {
-                    keyList.add(key.trim()
-                            .replaceAll("\r", "")
-                            .replaceAll("\n", ""));
-                } else {
+                keyList.add(key.trim()
+                        .replaceAll("\r", "")
+                        .replaceAll("\n", ""));
+                if (cursor.incrementAndGet() > batchSize.get()) {
                     futureList.add(createBatchRedisRequest(request.getConnection(), request.getIndex(), keyList));
                     cursor.set(0);
                     keyList.clear();

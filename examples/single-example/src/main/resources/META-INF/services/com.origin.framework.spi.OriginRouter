@@ -1,3 +1,4 @@
 com.kevin.sample.vertx.blog.router.BlogRouter
 com.kevin.sample.vertx.blog.router.LockRouter
 com.kevin.sample.vertx.blog.router.ComposeRouter
+com.kevin.sample.vertx.blog.router.RedisRouter
