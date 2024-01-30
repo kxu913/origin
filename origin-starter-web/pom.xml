@@ -34,6 +34,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.originframework</groupId>
+            <artifactId>origin-framework-redis</artifactId>
+            <version>${origin.version}</version>
+            <type>jar</type>
+
+        </dependency>
+
+        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-zookeeper</artifactId>
             <version>${vertx.version}</version>

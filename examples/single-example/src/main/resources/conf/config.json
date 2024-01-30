@@ -24,5 +24,23 @@
   },
   "custom-config": {
     "name": "Origin Framework"
+  },
+  "redis-v1": {
+    "endpoint": "redis://localhost:6379",
+    "role ": "MASTER",
+    "maxWaitingHandlers": 2048,
+    "netClientOptions": {
+      "TcpKeepAlive": true,
+      "TcpNoDelay": true
+    }
+  },
+  "redis-v2": {
+    "endpoint": "redis://localhost:6380",
+    "role ": "MASTER",
+    "maxWaitingHandlers": 2048,
+    "netClientOptions": {
+      "TcpKeepAlive": true,
+      "TcpNoDelay": true
+    }
   }
 }

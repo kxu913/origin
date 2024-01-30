@@ -33,6 +33,13 @@
 
         </dependency>
         <dependency>
+            <groupId>com.originframework</groupId>
+            <artifactId>origin-framework-redis</artifactId>
+            <version>${origin.version}</version>
+            <type>jar</type>
+
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <scope>compile</scope>
