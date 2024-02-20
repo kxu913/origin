@@ -17,7 +17,7 @@ public class DBDataTask implements OriginTask {
     public void run(OriginVertxContext originWebVertxContext, OriginConfig originConfig) {
         ServiceLoader<DBData> loader = ServiceLoader.load(DBData.class);
         loader.forEach(dbData -> {
-            SqlClient sqlClient = OriginAppApplication.getBeanFactory().getSqlClient();
+            SqlClient sqlClient = OriginAppApplication.getBeanFactory().getSqlClient(dbData.dbName());
             DBDataProcess.process(originConfig, sqlClient, dbData);
         });
     }

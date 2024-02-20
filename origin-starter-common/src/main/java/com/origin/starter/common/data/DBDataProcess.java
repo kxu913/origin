@@ -18,11 +18,14 @@ public class DBDataProcess {
 
     public static void process(OriginConfig originConfig, SqlClient sqlClient, DBData dbData) {
         String queue = dbData.queueName();
-        String sql = dbData.insertSQL();
+        String insertSql = dbData.insertSQL();
+        String rollbackSql = dbData.rollbackSQL();
         int batchSize = dbData.batchSize();
-        log.debug("start consume message from {}, prepare insert {} records to database using sql {}.", queue, batchSize, sql);
+        log.debug("start consume message from {}, prepare insert {} records to database.", queue, batchSize);
         List<DBData> dbDataList = new ArrayList<>();
         originConfig.getEventBus().consumer(queue, message -> {
+            String action = message.headers().get("action");
+            String sql = action != null && action.equalsIgnoreCase("delete") ? rollbackSql : insertSql;
             String end = message.body().toString();
             if (end.equals("end")) {
                 batchInsert(sqlClient, sql, dbDataList);

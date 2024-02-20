@@ -210,7 +210,7 @@ public class RedisShardingFactory<T extends OriginVertxContext> {
             Request request = scanRequest.arg(cursor).arg("match").arg("*").arg("count").arg(redisShardingAlgorithm.batchSize());
             Future<Response> responseFuture = connection.send(request);
             return responseFuture
-                    .compose(r -> scanHashData(connection, dataType, index, response, responseList))
+                    .compose(r -> scanHashData(connection, dataType, index, r, responseList))
                     .onFailure(err -> {
                         log.error(err.getMessage(), err);
                     });

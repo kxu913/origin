@@ -17,7 +17,7 @@ public class DBDataRouter implements OriginRouter {
     public void router(OriginWebVertxContext originWebVertxContext, OriginConfig originConfig) {
         ServiceLoader<DBData> loader = ServiceLoader.load(DBData.class);
         loader.forEach(dbData -> {
-            SqlClient sqlClient = OriginWebApplication.getBeanFactory().getSqlClient();
+            SqlClient sqlClient = OriginWebApplication.getBeanFactory().getSqlClient(dbData.dbName());
             DBDataProcess.process(originConfig, sqlClient, dbData);
         });
     }
