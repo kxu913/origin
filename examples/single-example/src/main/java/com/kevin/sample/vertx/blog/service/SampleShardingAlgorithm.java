@@ -14,6 +14,6 @@ public class SampleShardingAlgorithm implements RedisShardingAlgorithm {
 
     @Override
     public int optimizeThreshold() {
-        return 3;
+        return 10;
     }
 }

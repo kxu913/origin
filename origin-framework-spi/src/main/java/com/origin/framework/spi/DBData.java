@@ -10,12 +10,25 @@ import io.vertx.sqlclient.Tuple;
  */
 public interface DBData extends OriginData {
 
+    default String dbName() {
+        return "db";
+    }
+
     /**
      * SQL that used to insert data to db
      *
      * @return sql
      */
     String insertSQL();
+
+    /**
+     * SQL that used to rollback data from db
+     *
+     * @return sql
+     */
+    default String rollbackSQL() {
+        return "";
+    }
 
     /**
      * convert java object to Tuple.
