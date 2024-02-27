@@ -286,25 +286,31 @@ public class LoadFileUtil {
             if (log.isDebugEnabled()) {
                 log.debug("line: {}", line);
             }
-            if (request.isIgnoreFirstLine() && resultReport.getTotalSize().get() > 0) {
+
+            if (request.isIgnoreFirstLine()) {
+                if (resultReport.getTotalSize().get() > 0) {
+                    try {
+                        Request redisRequest = fn.apply(line);
+                        if (redisRequest != null) {
+                            connection.get().send(redisRequest)
+                                    .onSuccess(ar -> resultReport.getLoadedSize().incrementAndGet())
+                                    .onFailure(e -> resultReport.getErrorSize().incrementAndGet());
+                        }
+
+                    } catch (Exception e) {
+                        log.error("handle line failed, caused by {}", e.getMessage(), e);
+                        resultReport.getErrorSize().incrementAndGet();
+                    }
+
+                }
+            } else {
                 try {
                     Request redisRequest = fn.apply(line);
                     if (redisRequest != null) {
-                        connection.get().send(fn.apply(line))
+                        connection.get().send(redisRequest)
                                 .onSuccess(ar -> resultReport.getLoadedSize().incrementAndGet())
                                 .onFailure(e -> resultReport.getErrorSize().incrementAndGet());
                     }
-
-                } catch (Exception e) {
-                    log.error("handle line failed, caused by {}", e.getMessage(), e);
-                    resultReport.getErrorSize().incrementAndGet();
-                }
-
-            } else {
-                try {
-                    connection.get().send(fn.apply(line))
-                            .onSuccess(ar -> resultReport.getLoadedSize().incrementAndGet())
-                            .onFailure(e -> resultReport.getErrorSize().incrementAndGet());
                 } catch (Exception e) {
                     log.error("handle line failed, caused by {}", e.getMessage(), e);
                     resultReport.getErrorSize().incrementAndGet();

@@ -9,12 +9,10 @@ import io.vertx.core.Future;
 import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.parsetools.RecordParser;
-import io.vertx.ext.web.RoutingContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * it's a util class that used to read file.
@@ -64,14 +62,15 @@ public class ReadFileUtil {
             if (log.isDebugEnabled()) {
                 log.debug("line: {}", line);
             }
-            if (request.isIgnoreFirstLine() && resultReport.getTotalSize().get() > 0) {
-                try {
-                    fn.accept(line, resultReport);
-                } catch (Exception e) {
-                    log.error("handle line failed, caused by {}", e.getMessage(), e);
-                    resultReport.getErrorSize().incrementAndGet();
+            if (request.isIgnoreFirstLine()) {
+                if (resultReport.getTotalSize().get() > 0) {
+                    try {
+                        fn.accept(line, resultReport);
+                    } catch (Exception e) {
+                        log.error("handle line failed, caused by {}", e.getMessage(), e);
+                        resultReport.getErrorSize().incrementAndGet();
+                    }
                 }
-
             } else {
                 try {
                     fn.accept(line, resultReport);
