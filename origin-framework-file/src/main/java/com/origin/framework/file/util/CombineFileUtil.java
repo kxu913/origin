@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 public class CombineFileUtil {
@@ -37,7 +38,22 @@ public class CombineFileUtil {
                     try {
                         String key = args[request.getLeftJoinKeyIndex()];
                         cr.withKey(key);
-                        Arrays.stream(request.getLeftJoinFields()).forEach(i -> cr.addColumn(args[i].replaceAll("\r", "")));
+                        Arrays.stream(request.getLeftJoinFields()).forEach(i -> {
+                                    String v = args[i];
+                                    if (v == null) {
+                                        v = "NA";
+                                    } else {
+                                        v = v.replaceAll("\r", "");
+                                    }
+                                    cr.addColumn(v);
+                                }
+
+                        );
+                        Arrays.stream(request.getRightJoinFields()).forEach(i -> {
+                                    cr.addColumn("NA");
+                                }
+
+                        );
 
                         map.put(key, cr);
                     } catch (Exception e) {
@@ -58,7 +74,19 @@ public class CombineFileUtil {
                             String key = args[request.getRightJoinKeyIndex()];
                             if (map.containsKey(key)) {
                                 CombineResponse cr = map.get(key);
-                                Arrays.stream(request.getRightJoinFields()).forEach(i -> cr.addColumn(args[i].replaceAll("\r", "")));
+                                AtomicInteger index = new AtomicInteger(0);
+                                Arrays.stream(request.getRightJoinFields()).forEach(i -> {
+                                            String v = args[i];
+                                            if (v == null) {
+                                                v = "NA";
+                                            } else {
+                                                v = v.replaceAll("\r", "");
+                                            }
+                                            cr.getColumns().set(index.incrementAndGet() + request.getLeftJoinFields().length - 1, v);
+                                        }
+
+                                );
+
                             }
                         } catch (Exception e) {
                             log.error(e.getMessage(), e);
@@ -68,9 +96,7 @@ public class CombineFileUtil {
                     } else {
                         log.warn("row at [{}] is empty.", resultReport.getTotalSize().get() - 1);
                     }
-                }, () -> {
-                    promise.complete(map.values().stream().toList());
-                });
+                }, () -> promise.complete(map.values().stream().toList()));
 
             });
 
