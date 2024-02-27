@@ -3,9 +3,9 @@ package com.origin.framework.file.util;
 
 import com.origin.framework.core.bean.OriginWebVertxContext;
 import com.origin.framework.core.handler.AsyncResultHandler;
+import com.origin.framework.file.domain.request.WriteFileWithRedisRequest;
 import com.origin.framework.file.domain.response.HashDataResponse;
 import com.origin.framework.file.domain.result.ResultReport;
-import com.origin.framework.file.domain.request.WriteFileWithRedisRequest;
 import io.vertx.core.Future;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.AsyncFile;
@@ -210,13 +210,16 @@ public class WriteFileWithRedisUtil {
             if (log.isDebugEnabled()) {
                 log.debug("line: {}", line);
             }
-            if (request.isIgnoreFirstLine() && resultReport.getTotalSize().get() > 0) {
-                try {
-                    request.getFutures().add(connection.send(fn.apply(line)));
-                } catch (Exception e) {
-                    log.error("handle line failed, caused by {}", e.getMessage(), e);
-                    resultReport.getErrorSize().incrementAndGet();
+            if (request.isIgnoreFirstLine()) {
+                if (resultReport.getTotalSize().get() > 0) {
+                    try {
+                        request.getFutures().add(connection.send(fn.apply(line)));
+                    } catch (Exception e) {
+                        log.error("handle line failed, caused by {}", e.getMessage(), e);
+                        resultReport.getErrorSize().incrementAndGet();
+                    }
                 }
+
             } else {
                 try {
                     request.getFutures().add(connection.send(fn.apply(line)));
