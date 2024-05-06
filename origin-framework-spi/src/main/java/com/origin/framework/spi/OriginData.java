@@ -8,5 +8,8 @@ package com.origin.framework.spi;
  */
 public interface OriginData {
 
-    public String queueName();
+    default String queueName() {
+        return "adr-all";
+    }
+
 }

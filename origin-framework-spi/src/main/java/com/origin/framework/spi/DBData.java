@@ -10,6 +10,14 @@ import io.vertx.sqlclient.Tuple;
  */
 public interface DBData extends OriginData {
 
+    default String taskName() {
+        return null;
+    }
+
+    default String collectionConfig() {
+        return "data-collection-tasks";
+    }
+
     default String dbName() {
         return "db";
     }

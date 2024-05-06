@@ -6,6 +6,7 @@ import com.origin.framework.spi.DBData;
 import com.origin.framework.spi.OriginRouter;
 import com.origin.starter.common.data.DBDataProcess;
 import com.origin.starter.web.OriginWebApplication;
+import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.SqlClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,7 +18,15 @@ public class DBDataRouter implements OriginRouter {
     public void router(OriginWebVertxContext originWebVertxContext, OriginConfig originConfig) {
         ServiceLoader<DBData> loader = ServiceLoader.load(DBData.class);
         loader.forEach(dbData -> {
-            SqlClient sqlClient = OriginWebApplication.getBeanFactory().getSqlClient(dbData.dbName());
+            String dbName;
+            String taskName = dbData.taskName();
+            if (taskName != null) {
+                JsonObject config = originConfig.getAppConfig().getJsonObject(dbData.collectionConfig());
+                dbName = config.getJsonObject(taskName).getString("db");
+            } else {
+                dbName = dbData.dbName();
+            }
+            SqlClient sqlClient = OriginWebApplication.getBeanFactory().getSqlClient(dbName);
             DBDataProcess.process(originConfig, sqlClient, dbData);
         });
     }
