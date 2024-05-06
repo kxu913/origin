@@ -17,7 +17,14 @@ import java.util.List;
 public class DBDataProcess {
 
     public static void process(OriginConfig originConfig, SqlClient sqlClient, DBData dbData) {
-        String queue = dbData.queueName();
+        String queue;
+        String taskName = dbData.taskName();
+        if (taskName != null) {
+            JsonObject config = originConfig.getAppConfig().getJsonObject(dbData.collectionConfig());
+            queue = config.getJsonObject(taskName).getString("queue");
+        } else {
+            queue = dbData.queueName();
+        }
         String insertSql = dbData.insertSQL();
         String rollbackSql = dbData.rollbackSQL();
         int batchSize = dbData.batchSize();
@@ -28,7 +35,7 @@ public class DBDataProcess {
             String sql = action != null && action.equalsIgnoreCase("delete") ? rollbackSql : insertSql;
             String end = message.body().toString();
             if (end.equals("end")) {
-                batchInsert(sqlClient, sql, dbDataList);
+                batchInsert(sqlClient, sql, dbDataList, batchSize);
                 log.info("batch process reached end.");
                 return;
             }
@@ -36,7 +43,7 @@ public class DBDataProcess {
                 DBData innerData = new JsonObject(message.body().toString()).mapTo(dbData.getClass());
                 dbDataList.add(innerData);
                 if (dbDataList.size() == batchSize) {
-                    batchInsert(sqlClient, sql, dbDataList);
+                    batchInsert(sqlClient, sql, dbDataList, batchSize);
                     dbDataList.clear();
                 }
             } catch (Exception e) {
@@ -48,13 +55,20 @@ public class DBDataProcess {
         });
     }
 
-    private static void batchInsert(SqlClient sqlClient, String sql, List<DBData> dbDataList) {
-        List<Tuple> batch = dbDataList.stream().map(DBData::toTuple).toList();
+    private static void batchInsert(SqlClient sqlClient, String sql, List<DBData> dbDataList, int batchSize) {
+        List<DBData> dbDataListCopy = new ArrayList<>(dbDataList);
+
+        if (dbDataListCopy.isEmpty()) {
+            return;
+        }
+
+        List<Tuple> batch = dbDataListCopy.stream().map(DBData::toTuple).toList();
         Future<RowSet<Row>> future = sqlClient.preparedQuery(sql)
                 .executeBatch(batch);
         future.onSuccess(ar -> {
-                    if (log.isDebugEnabled()) {
-                        log.debug("actually insert {} records to database.", dbDataList.size());
+                    log.info("batch insert {} records to database.", dbDataListCopy.size());
+                    if (dbDataListCopy.size() < batchSize) {
+                        log.info("reach end, tha last batch size is {}.", dbDataListCopy.size());
                     }
 
                 })
